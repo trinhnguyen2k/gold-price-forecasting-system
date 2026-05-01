@@ -39,16 +39,39 @@ export const latestForecastCardStyles = {
   predictionValue:
     "mt-2 text-3xl font-bold tracking-tight text-[var(--blue-accent)]",
 
-  metricGrid: "grid gap-4 md:grid-cols-2",
+  metricGrid: "grid grid-cols-1 gap-4 md:grid-cols-2",
 
   metricPanel:
-    "rounded-xl border border-[var(--border-color)] bg-[var(--panel-bg)] p-4",
+    "rounded-[28px] border border-[var(--border-color)] bg-[var(--card-bg)] p-6",
 
-  metricTitle: "text-sm font-semibold text-[var(--title-color)]",
+  metricHeader: "mb-4",
 
-  metricBody: "mt-3 space-y-2 text-sm text-[var(--text-color)]",
+  metricTitle:
+    "text-[1.05rem] font-semibold leading-none text-[var(--title-color)]",
 
-  metricLabel: "font-medium text-[var(--muted-color)]",
+  metricHint: "mt-2 text-xs font-medium text-[var(--muted-color)]",
+
+  metricBody: "grid grid-cols-3 gap-3",
+
+  metricItemMae:
+    "rounded-2xl border border-[var(--border-color)] bg-[var(--blue-accent-soft)] px-4 py-4 text-center",
+
+  metricItemRmse:
+    "rounded-2xl border border-[var(--border-color)] bg-[var(--panel-bg)] px-4 py-4 text-center",
+
+  metricItemMape:
+    "rounded-2xl border border-[var(--gold-border-soft)] bg-[var(--gold-accent-soft)] px-4 py-4 text-center",
+  metricValueMae:
+    "text-[0.8rem] font-bold leading-none tracking-tight text-[var(--blue-accent)]",
+
+  metricValueRmse:
+    "text-[0.8rem] font-bold leading-none tracking-tight text-[var(--title-color)]",
+
+  metricValueMape:
+    "text-[0.8rem] font-bold leading-none tracking-tight text-[var(--gold-accent)]",
+
+  metricLabel:
+    "mt-2 text-[0.9rem] font-medium leading-none text-[var(--muted-color)]",
 
   emptyText: "text-sm text-[var(--muted-color)]",
 };

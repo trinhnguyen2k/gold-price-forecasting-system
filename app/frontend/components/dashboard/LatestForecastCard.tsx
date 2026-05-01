@@ -34,25 +34,38 @@ function findMetricsBySplit(
 function MetricPanel({ title, metric }: MetricPanelProps) {
   return (
     <div className={latestForecastCardStyles.metricPanel}>
-      <h3 className={latestForecastCardStyles.metricTitle}>{title}</h3>
+      <div className={latestForecastCardStyles.metricHeader}>
+        <h3 className={latestForecastCardStyles.metricTitle}>{title}</h3>
+        <p className={latestForecastCardStyles.metricHint}>Lower is better</p>
+      </div>
 
       {metric ? (
         <div className={latestForecastCardStyles.metricBody}>
-          <p>
-            <span className={latestForecastCardStyles.metricLabel}>MAE:</span>{" "}
-            {metric.mae.toFixed(4)}
-          </p>
-          <p>
-            <span className={latestForecastCardStyles.metricLabel}>RMSE:</span>{" "}
-            {metric.rmse.toFixed(4)}
-          </p>
-          <p>
-            <span className={latestForecastCardStyles.metricLabel}>MAPE:</span>{" "}
-            {metric.mape.toFixed(4)}
-          </p>
+          <div className={latestForecastCardStyles.metricItemMae}>
+            <p className={latestForecastCardStyles.metricValueMae}>
+              {metric.mae.toFixed(2)}
+            </p>
+            <p className={latestForecastCardStyles.metricLabel}>MAE</p>
+          </div>
+
+          <div className={latestForecastCardStyles.metricItemRmse}>
+            <p className={latestForecastCardStyles.metricValueRmse}>
+              {metric.rmse.toFixed(2)}
+            </p>
+            <p className={latestForecastCardStyles.metricLabel}>RMSE</p>
+          </div>
+
+          <div className={latestForecastCardStyles.metricItemMape}>
+            <p className={latestForecastCardStyles.metricValueMape}>
+              {metric.mape.toFixed(2)}%
+            </p>
+            <p className={latestForecastCardStyles.metricLabel}>MAPE</p>
+          </div>
         </div>
       ) : (
-        <p className="mt-3 text-sm text-slate-500">No metrics available.</p>
+        <p className={latestForecastCardStyles.emptyText}>
+          No metrics available.
+        </p>
       )}
     </div>
   );
