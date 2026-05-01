@@ -3,7 +3,14 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+html,
+body {
+  min-height: 100%;
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

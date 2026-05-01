@@ -1,5 +1,5 @@
 export const latestForecastCardStyles = {
-  card: "border-slate-200 shadow-sm",
+  card: "h-full border-slate-200 shadow-sm",
 
   header: "flex flex-row items-start justify-between space-y-0",
 
