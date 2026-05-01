@@ -1,11 +1,11 @@
 // Gom toàn bộ hàm gọi API backend vào 1 file để dễ maintain và tái sử dụng
 
-import type {
+import {
+  ChatAskResponse,
+  LatestForecastResponse,
   LatestPrice,
   PriceHistoryItem,
-  LatestForecastResponse,
-  ChatAskResponse,
-} from "@/types/api";
+} from "@/type/api.type";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
