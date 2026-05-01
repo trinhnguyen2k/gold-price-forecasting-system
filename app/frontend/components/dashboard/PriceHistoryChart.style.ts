@@ -8,5 +8,5 @@ export const priceHistoryChartStyles = {
   chartWrapper: "mt-6 h-[380px] w-full",
 
   emptyState:
-    "flex h-[280px] items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500",
+    "flex h-[280px] items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 text-sm text-slate-500",
 };

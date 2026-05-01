@@ -14,6 +14,7 @@ import { formatDateDdMmYyyy, formatPriceUsd } from "@/libs/format";
 import { PriceHistoryItem } from "@/type/api.type";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { priceHistoryChartStyles } from "./PriceHistoryChart.style";
+import { LineChart as LineChartIcon } from "lucide-react";
 
 interface PriceHistoryChartProps {
   priceHistory: PriceHistoryItem[];
@@ -72,7 +73,17 @@ export default function PriceHistoryChart({
           </div>
         ) : (
           <div className={priceHistoryChartStyles.emptyState}>
-            No price history data available.
+            <div className="flex flex-col items-center text-center">
+              <div className="rounded-full bg-slate-100 p-3 text-slate-500">
+                <LineChartIcon className="h-5 w-5" />
+              </div>
+              <p className="mt-3 font-medium text-slate-700">
+                No price history data available
+              </p>
+              <p className="mt-1 max-w-md text-sm text-slate-500">
+                Dữ liệu lịch sử giá chưa sẵn sàng để hiển thị biểu đồ.
+              </p>
+            </div>
           </div>
         )}
       </CardContent>

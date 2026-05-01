@@ -181,9 +181,14 @@ export default function LatestForecastCard({
             </div>
           </>
         ) : (
-          <p className={latestForecastCardStyles.emptyText}>
-            Hiện chưa có dữ liệu forecast.
-          </p>
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
+            <p className="font-medium text-slate-700">
+              No forecast data available
+            </p>
+            <p className="mt-2 text-sm text-slate-500">
+              Hệ thống hiện chưa có dữ liệu dự báo để hiển thị.
+            </p>
+          </div>
         )}
       </CardContent>
     </Card>
