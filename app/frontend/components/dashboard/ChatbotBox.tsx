@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Bot,
   Maximize2,
@@ -38,6 +38,15 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [messages, isLoading]);
 
   async function submitQuestion(rawQuestion: string) {
     const trimmedQuestion = rawQuestion.trim();
@@ -135,30 +144,30 @@ export default function ChatBot() {
               : chatBotStyles.popupCompact,
           )}
         >
-          <Card className="border-slate-200 shadow-2xl">
-            <CardHeader className="flex flex-row items-start justify-between space-y-0 border-b border-slate-100">
-              <div className="flex items-start gap-3">
-                <div className="rounded-full bg-sky-100 p-2 text-sky-700">
+          <Card className={chatBotStyles.card}>
+            <CardHeader className={chatBotStyles.header}>
+              <div className={chatBotStyles.headerLeft}>
+                <div className={chatBotStyles.headerIcon}>
                   <Bot className="h-5 w-5" />
                 </div>
 
                 <div>
-                  <CardTitle className="text-base text-slate-900">
+                  <CardTitle className={chatBotStyles.headerTitle}>
                     Gold Assistant
                   </CardTitle>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className={chatBotStyles.headerDescription}>
                     Ask about latest price, forecast, and model metrics
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1">
+              <div className={chatBotStyles.headerActions}>
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsExpanded((prev) => !prev)}
-                  className="h-8 w-8"
+                  className={chatBotStyles.iconButton}
                   aria-label={
                     isExpanded ? "Collapse chatbot" : "Expand chatbot"
                   }
@@ -175,7 +184,7 @@ export default function ChatBot() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsOpen(false)}
-                  className="h-8 w-8"
+                  className={chatBotStyles.iconButton}
                   aria-label="Close chatbot"
                 >
                   <X className="h-4 w-4" />
@@ -183,31 +192,33 @@ export default function ChatBot() {
               </div>
             </CardHeader>
 
-            <CardContent className="space-y-4 p-4">
+            <CardContent className={chatBotStyles.content}>
               <div
                 className={cn(
-                  "overflow-y-auto rounded-xl bg-slate-50 p-4",
-                  isExpanded ? "h-[420px]" : "h-[340px]",
+                  chatBotStyles.messageAreaBase,
+                  isExpanded
+                    ? chatBotStyles.messageAreaExpanded
+                    : chatBotStyles.messageAreaCompact,
                 )}
               >
                 {messages.length === 0 && !isLoading && !errorMessage && (
                   <div className="space-y-4">
-                    <div className="rounded-2xl bg-white p-4 text-sm leading-6 text-slate-700 shadow-sm">
+                    <div className={chatBotStyles.introBubble}>
                       Xin chào, mình có thể hỗ trợ bạn tra cứu giá vàng mới
                       nhất, forecast gần nhất và các metrics đánh giá mô hình.
                     </div>
 
                     <div>
-                      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      <p className={chatBotStyles.suggestedTitle}>
                         Suggested questions
                       </p>
-                      <div className="flex flex-col gap-2">
+                      <div className={chatBotStyles.suggestedList}>
                         {suggestedQuestions.map((item) => (
                           <button
                             key={item}
                             type="button"
                             onClick={() => handleSuggestedQuestion(item)}
-                            className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-left text-sm text-slate-700 transition hover:border-sky-300 hover:bg-sky-50"
+                            className={chatBotStyles.suggestedButton}
                           >
                             {item}
                           </button>
@@ -217,12 +228,15 @@ export default function ChatBot() {
                   </div>
                 )}
 
-                <div className="space-y-4">
+                <div className={chatBotStyles.messagesList}>
                   {messages.map((message) => {
                     if (message.role === "user") {
                       return (
-                        <div key={message.id} className="flex justify-end">
-                          <div className="max-w-[85%] rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
+                        <div
+                          key={message.id}
+                          className={chatBotStyles.userMessageRow}
+                        >
+                          <div className={chatBotStyles.userBubble}>
                             {message.content}
                           </div>
                         </div>
@@ -230,15 +244,18 @@ export default function ChatBot() {
                     }
 
                     return (
-                      <div key={message.id} className="space-y-2">
+                      <div
+                        key={message.id}
+                        className={chatBotStyles.botMessageWrapper}
+                      >
                         {typeof message.isInScope === "boolean" && (
                           <div className="flex items-center gap-2">
                             <Badge
                               className={cn(
-                                "rounded-full",
+                                chatBotStyles.badgeBase,
                                 message.isInScope
-                                  ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
-                                  : "bg-amber-100 text-amber-700 hover:bg-amber-100",
+                                  ? chatBotStyles.badgeInScope
+                                  : chatBotStyles.badgeOutOfScope,
                               )}
                             >
                               {message.isInScope ? "In scope" : "Out of scope"}
@@ -246,40 +263,41 @@ export default function ChatBot() {
                           </div>
                         )}
 
-                        <div className="max-w-[90%] rounded-2xl bg-white px-4 py-3 text-sm leading-6 text-slate-700 shadow-sm">
+                        <div className={chatBotStyles.botBubble}>
                           {message.content}
                         </div>
+                        <div ref={messagesEndRef} />
                       </div>
                     );
                   })}
 
                   {isLoading && (
-                    <div className="max-w-[85%] rounded-2xl bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
+                    <div className={chatBotStyles.loadingBubble}>
                       Đang gửi câu hỏi tới chatbot...
                     </div>
                   )}
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-3">
+              <form onSubmit={handleSubmit} className={chatBotStyles.form}>
                 <Textarea
-                  onKeyDown={handleKeyDown}
                   value={inputValue}
                   onChange={(event) => setInputValue(event.target.value)}
+                  onKeyDown={handleKeyDown}
                   placeholder="Ví dụ: Giá vàng mới nhất là bao nhiêu?"
                   className={cn(
-                    "min-h-[96px] resize-none rounded-xl border-slate-300 focus-visible:ring-sky-300",
-                    isExpanded && "min-h-[120px]",
+                    chatBotStyles.textareaBase,
+                    isExpanded && chatBotStyles.textareaExpanded,
                   )}
                 />
 
-                <div className="flex items-center justify-between gap-3">
+                <div className={chatBotStyles.footerActions}>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={handleClear}
                     disabled={isLoading}
-                    className="rounded-xl"
+                    className={chatBotStyles.clearButton}
                   >
                     Clear
                   </Button>
@@ -287,7 +305,7 @@ export default function ChatBot() {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="rounded-xl bg-slate-900 text-white hover:bg-slate-800"
+                    className={chatBotStyles.submitButton}
                   >
                     <Send className="mr-2 h-4 w-4" />
                     {isLoading ? "Sending..." : "Ask chatbot"}
