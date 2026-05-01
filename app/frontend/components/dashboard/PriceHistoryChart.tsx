@@ -12,6 +12,8 @@ import {
 
 import { formatDateDdMmYyyy, formatPriceUsd } from "@/libs/format";
 import { PriceHistoryItem } from "@/type/api.type";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { priceHistoryChartStyles } from "./PriceHistoryChart.style";
 
 interface PriceHistoryChartProps {
   priceHistory: PriceHistoryItem[];
@@ -26,44 +28,54 @@ export default function PriceHistoryChart({
   }));
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-      <h2 className="text-lg font-semibold text-slate-900">
-        Price History Chart
-      </h2>
-      <p className="mt-2 text-sm text-slate-600">
-        Biểu đồ thể hiện lịch sử giá đóng cửa vàng theo thời gian.
-      </p>
+    <Card className={priceHistoryChartStyles.card}>
+      <CardHeader>
+        <CardTitle className={priceHistoryChartStyles.title}>
+          Price History Chart
+        </CardTitle>
+        <p className={priceHistoryChartStyles.description}>
+          Biểu đồ thể hiện lịch sử giá đóng cửa vàng theo thời gian.
+        </p>
+      </CardHeader>
 
-      <div className="mt-6 h-[380px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="formattedDate"
-              minTickGap={32}
-              tick={{ fontSize: 12 }}
-            />
-            <YAxis
-              tick={{ fontSize: 12 }}
-              tickFormatter={(value) => Number(value).toFixed(0)}
-            />
-            <Tooltip
-              formatter={(value: number | string) => formatPriceUsd(value)}
-              labelFormatter={(label) => `Date: ${label}`}
-            />
-            <Line
-              type="monotone"
-              dataKey="close"
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 5 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+      <CardContent>
+        {chartData.length > 0 ? (
+          <div className={priceHistoryChartStyles.chartWrapper}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={chartData}
+                margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="formattedDate"
+                  minTickGap={32}
+                  tick={{ fontSize: 12 }}
+                />
+                <YAxis
+                  tick={{ fontSize: 12 }}
+                  tickFormatter={(value) => Number(value).toFixed(0)}
+                />
+                <Tooltip
+                  formatter={(value: number | string) => formatPriceUsd(value)}
+                  labelFormatter={(label) => `Date: ${label}`}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="close"
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 5 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className={priceHistoryChartStyles.emptyState}>
+            No price history data available.
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

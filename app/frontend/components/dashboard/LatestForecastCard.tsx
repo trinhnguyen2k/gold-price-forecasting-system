@@ -9,6 +9,7 @@ import type {
   LatestForecastResponse,
   ModelEvaluationItem,
 } from "@/type/api.type";
+import { latestForecastCardStyles } from "./LatestForecastCard.style";
 
 interface LatestForecastCardProps {
   latestForecast: LatestForecastResponse;
@@ -32,21 +33,21 @@ function findMetricsBySplit(
 
 function MetricPanel({ title, metric }: MetricPanelProps) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+    <div className={latestForecastCardStyles.metricPanel}>
+      <h3 className={latestForecastCardStyles.metricTitle}>{title}</h3>
 
       {metric ? (
-        <div className="mt-3 space-y-2 text-sm text-slate-700">
+        <div className={latestForecastCardStyles.metricBody}>
           <p>
-            <span className="font-medium text-slate-500">MAE:</span>{" "}
+            <span className={latestForecastCardStyles.metricLabel}>MAE:</span>{" "}
             {metric.mae.toFixed(4)}
           </p>
           <p>
-            <span className="font-medium text-slate-500">RMSE:</span>{" "}
+            <span className={latestForecastCardStyles.metricLabel}>RMSE:</span>{" "}
             {metric.rmse.toFixed(4)}
           </p>
           <p>
-            <span className="font-medium text-slate-500">MAPE:</span>{" "}
+            <span className={latestForecastCardStyles.metricLabel}>MAPE:</span>{" "}
             {metric.mape.toFixed(4)}
           </p>
         </div>
@@ -71,59 +72,71 @@ export default function LatestForecastCard({
   const testMetrics = findMetricsBySplit(latestForecast.evaluations, "test");
 
   return (
-    <Card className="border-slate-200 shadow-sm">
-      <CardHeader className="flex flex-row items-start justify-between space-y-0">
+    <Card className={latestForecastCardStyles.card}>
+      <CardHeader className={latestForecastCardStyles.header}>
         <div>
-          <CardTitle className="text-lg text-slate-900">
+          <CardTitle className={latestForecastCardStyles.title}>
             Latest Forecast
           </CardTitle>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className={latestForecastCardStyles.description}>
             Kết quả forecast mới nhất và các chỉ số đánh giá mô hình
           </p>
         </div>
 
-        <div className="rounded-full bg-sky-100 p-2 text-sky-700">
+        <div className={latestForecastCardStyles.headerIcon}>
           <Brain className="h-5 w-5" />
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className={latestForecastCardStyles.content}>
         {latestForecast.run ? (
-          <div className="space-y-6">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary" className="rounded-full">
+          <>
+            <div className={latestForecastCardStyles.badgeRow}>
+              <Badge
+                variant="secondary"
+                className={latestForecastCardStyles.secondaryBadge}
+              >
                 {latestForecast.run.model_name}
               </Badge>
-              <Badge variant="outline" className="rounded-full">
+
+              <Badge
+                variant="outline"
+                className={latestForecastCardStyles.secondaryBadge}
+              >
                 {latestForecast.run.status}
               </Badge>
+
               {latestForecast.run.note?.toLowerCase().includes("sample") && (
-                <Badge className="rounded-full bg-amber-100 text-amber-700 hover:bg-amber-100">
+                <Badge className={latestForecastCardStyles.sampleBadge}>
                   Sample data
                 </Badge>
               )}
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <div className="flex items-center gap-2 text-slate-700">
+            <div className={latestForecastCardStyles.infoGrid}>
+              <div className={latestForecastCardStyles.infoPanel}>
+                <div className={latestForecastCardStyles.infoPanelHeader}>
                   <CalendarDays className="h-4 w-4" />
-                  <p className="text-sm font-medium">
+                  <p className={latestForecastCardStyles.infoPanelHeaderText}>
                     Forecast run information
                   </p>
                 </div>
 
-                <div className="mt-4 space-y-2 text-sm text-slate-700">
+                <div className={latestForecastCardStyles.infoPanelBody}>
                   <p>
-                    <span className="font-medium text-slate-500">Model:</span>{" "}
+                    <span className={latestForecastCardStyles.infoLabel}>
+                      Model:
+                    </span>{" "}
                     {latestForecast.run.model_name}
                   </p>
                   <p>
-                    <span className="font-medium text-slate-500">Version:</span>{" "}
+                    <span className={latestForecastCardStyles.infoLabel}>
+                      Version:
+                    </span>{" "}
                     {latestForecast.run.model_version ?? "N/A"}
                   </p>
                   <p>
-                    <span className="font-medium text-slate-500">
+                    <span className={latestForecastCardStyles.infoLabel}>
                       Forecast date:
                     </span>{" "}
                     {formatDateDdMmYyyy(latestForecast.run.forecast_date)}
@@ -131,19 +144,21 @@ export default function LatestForecastCard({
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-gradient-to-br from-sky-50 to-white p-5 ring-1 ring-sky-100">
-                <div className="flex items-center gap-2 text-slate-700">
+              <div className={latestForecastCardStyles.predictionPanel}>
+                <div className={latestForecastCardStyles.infoPanelHeader}>
                   <Sparkles className="h-4 w-4" />
-                  <p className="text-sm font-medium">Nearest prediction</p>
+                  <p className={latestForecastCardStyles.infoPanelHeaderText}>
+                    Nearest prediction
+                  </p>
                 </div>
 
                 {firstForecast ? (
                   <>
-                    <p className="mt-4 text-sm text-slate-500">
+                    <p className={latestForecastCardStyles.predictionDateLabel}>
                       Target date{" "}
                       {formatDateDdMmYyyy(firstForecast.target_date)}
                     </p>
-                    <p className="mt-2 text-3xl font-bold tracking-tight text-sky-700">
+                    <p className={latestForecastCardStyles.predictionValue}>
                       {formatPriceUsd(firstForecast.predicted_close)}
                     </p>
                   </>
@@ -157,16 +172,16 @@ export default function LatestForecastCard({
 
             <Separator />
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className={latestForecastCardStyles.metricGrid}>
               <MetricPanel
                 title="Validation Metrics"
                 metric={validationMetrics}
               />
               <MetricPanel title="Test Metrics" metric={testMetrics} />
             </div>
-          </div>
+          </>
         ) : (
-          <p className="text-sm text-slate-500">
+          <p className={latestForecastCardStyles.emptyText}>
             Hiện chưa có dữ liệu forecast.
           </p>
         )}
