@@ -1,124 +1,303 @@
 "use client";
 
 import { useState } from "react";
+import {
+  Bot,
+  Maximize2,
+  MessageCircle,
+  Minimize2,
+  Send,
+  X,
+} from "lucide-react";
 
 import { askChatbot } from "@/libs/api";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { chatBotStyles } from "./ChatBot.style";
 
-export default function ChatbotBox() {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [isInScope, setIsInScope] = useState<boolean | null>(null);
+const suggestedQuestions = [
+  "Giá vàng mới nhất là bao nhiêu?",
+  "Dự báo mới nhất là gì?",
+  "Các metrics hiện tại là gì?",
+];
+
+type ChatMessage = {
+  id: string;
+  role: "user" | "bot";
+  content: string;
+  isInScope?: boolean;
+};
+
+export default function ChatBot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const trimmedQuestion = question.trim();
+  async function submitQuestion(rawQuestion: string) {
+    const trimmedQuestion = rawQuestion.trim();
 
     if (!trimmedQuestion) {
       setErrorMessage("Vui lòng nhập câu hỏi trước khi gửi.");
       return;
     }
 
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      content: trimmedQuestion,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    setErrorMessage("");
+
     try {
       setIsLoading(true);
-      setErrorMessage("");
-      setAnswer("");
-      setIsInScope(null);
 
       const response = await askChatbot(trimmedQuestion);
 
-      setAnswer(response.answer);
-      setIsInScope(response.is_in_scope);
+      const botMessage: ChatMessage = {
+        id: `bot-${Date.now()}`,
+        role: "bot",
+        content: response.answer,
+        isInScope: response.is_in_scope,
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error(error);
+
+      const botErrorMessage: ChatMessage = {
+        id: `bot-error-${Date.now()}`,
+        role: "bot",
+        content: "Không thể gửi câu hỏi tới chatbot. Vui lòng thử lại.",
+        isInScope: false,
+      };
+
+      setMessages((prev) => [...prev, botErrorMessage]);
       setErrorMessage("Không thể gửi câu hỏi tới chatbot. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }
   }
 
+  async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await submitQuestion(inputValue);
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+
+      if (!isLoading && inputValue.trim()) {
+        void submitQuestion(inputValue);
+      }
+    }
+  }
+
+  async function handleSuggestedQuestion(suggestedQuestion: string) {
+    setInputValue(suggestedQuestion);
+    await submitQuestion(suggestedQuestion);
+  }
+
+  function handleClear() {
+    setInputValue("");
+    setMessages([]);
+    setErrorMessage("");
+  }
+
   return (
-    <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-      <h2 className="text-lg font-semibold text-slate-900">Chatbot Box</h2>
-      <p className="mt-2 text-sm text-slate-600">
-        Đặt câu hỏi về giá vàng mới nhất, forecast hoặc các chỉ số đánh giá mô
-        hình.
-      </p>
-
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-        <div>
-          <label
-            htmlFor="chatbot-question"
-            className="mb-2 block text-sm font-medium text-slate-700"
-          >
-            Your question
-          </label>
-          <textarea
-            id="chatbot-question"
-            value={question}
-            onChange={(event) => setQuestion(event.target.value)}
-            placeholder="Ví dụ: Giá vàng mới nhất là bao nhiêu?"
-            className="min-h-[120px] w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
-          />
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isLoading ? "Sending..." : "Ask chatbot"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setQuestion("");
-              setAnswer("");
-              setIsInScope(null);
-              setErrorMessage("");
-            }}
-            className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
-            Clear
-          </button>
-        </div>
-      </form>
-
-      {errorMessage && (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {errorMessage}
-        </div>
+    <>
+      {!isOpen && (
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          className={chatBotStyles.launcher}
+          aria-label="Open chatbot"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </button>
       )}
 
-      {answer && (
-        <div className="mt-6 rounded-2xl bg-slate-50 p-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <h3 className="text-sm font-semibold text-slate-900">
-              Chatbot Response
-            </h3>
+      {isOpen && (
+        <div
+          className={cn(
+            chatBotStyles.popupBase,
+            isExpanded
+              ? chatBotStyles.popupExpanded
+              : chatBotStyles.popupCompact,
+          )}
+        >
+          <Card className="border-slate-200 shadow-2xl">
+            <CardHeader className="flex flex-row items-start justify-between space-y-0 border-b border-slate-100">
+              <div className="flex items-start gap-3">
+                <div className="rounded-full bg-sky-100 p-2 text-sky-700">
+                  <Bot className="h-5 w-5" />
+                </div>
 
-            {isInScope !== null && (
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-medium ${
-                  isInScope
-                    ? "bg-emerald-100 text-emerald-700"
-                    : "bg-amber-100 text-amber-700"
-                }`}
+                <div>
+                  <CardTitle className="text-base text-slate-900">
+                    Gold Assistant
+                  </CardTitle>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Ask about latest price, forecast, and model metrics
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsExpanded((prev) => !prev)}
+                  className="h-8 w-8"
+                  aria-label={
+                    isExpanded ? "Collapse chatbot" : "Expand chatbot"
+                  }
+                >
+                  {isExpanded ? (
+                    <Minimize2 className="h-4 w-4" />
+                  ) : (
+                    <Maximize2 className="h-4 w-4" />
+                  )}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsOpen(false)}
+                  className="h-8 w-8"
+                  aria-label="Close chatbot"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-4 p-4">
+              <div
+                className={cn(
+                  "overflow-y-auto rounded-xl bg-slate-50 p-4",
+                  isExpanded ? "h-[420px]" : "h-[340px]",
+                )}
               >
-                {isInScope ? "In scope" : "Out of scope"}
-              </span>
-            )}
-          </div>
+                {messages.length === 0 && !isLoading && !errorMessage && (
+                  <div className="space-y-4">
+                    <div className="rounded-2xl bg-white p-4 text-sm leading-6 text-slate-700 shadow-sm">
+                      Xin chào, mình có thể hỗ trợ bạn tra cứu giá vàng mới
+                      nhất, forecast gần nhất và các metrics đánh giá mô hình.
+                    </div>
 
-          <p className="whitespace-pre-line text-sm leading-6 text-slate-700">
-            {answer}
-          </p>
+                    <div>
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        Suggested questions
+                      </p>
+                      <div className="flex flex-col gap-2">
+                        {suggestedQuestions.map((item) => (
+                          <button
+                            key={item}
+                            type="button"
+                            onClick={() => handleSuggestedQuestion(item)}
+                            className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-left text-sm text-slate-700 transition hover:border-sky-300 hover:bg-sky-50"
+                          >
+                            {item}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  {messages.map((message) => {
+                    if (message.role === "user") {
+                      return (
+                        <div key={message.id} className="flex justify-end">
+                          <div className="max-w-[85%] rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
+                            {message.content}
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div key={message.id} className="space-y-2">
+                        {typeof message.isInScope === "boolean" && (
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              className={cn(
+                                "rounded-full",
+                                message.isInScope
+                                  ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
+                                  : "bg-amber-100 text-amber-700 hover:bg-amber-100",
+                              )}
+                            >
+                              {message.isInScope ? "In scope" : "Out of scope"}
+                            </Badge>
+                          </div>
+                        )}
+
+                        <div className="max-w-[90%] rounded-2xl bg-white px-4 py-3 text-sm leading-6 text-slate-700 shadow-sm">
+                          {message.content}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {isLoading && (
+                    <div className="max-w-[85%] rounded-2xl bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
+                      Đang gửi câu hỏi tới chatbot...
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-3">
+                <Textarea
+                  onKeyDown={handleKeyDown}
+                  value={inputValue}
+                  onChange={(event) => setInputValue(event.target.value)}
+                  placeholder="Ví dụ: Giá vàng mới nhất là bao nhiêu?"
+                  className={cn(
+                    "min-h-[96px] resize-none rounded-xl border-slate-300 focus-visible:ring-sky-300",
+                    isExpanded && "min-h-[120px]",
+                  )}
+                />
+
+                <div className="flex items-center justify-between gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleClear}
+                    disabled={isLoading}
+                    className="rounded-xl"
+                  >
+                    Clear
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="rounded-xl bg-slate-900 text-white hover:bg-slate-800"
+                  >
+                    <Send className="mr-2 h-4 w-4" />
+                    {isLoading ? "Sending..." : "Ask chatbot"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       )}
-    </section>
+    </>
   );
 }
