@@ -20,6 +20,35 @@ interface PriceHistoryChartProps {
   priceHistory: PriceHistoryItem[];
 }
 
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{ value: number | string }>;
+  label?: string;
+}
+
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
+  if (!active || !payload || !payload.length) {
+    return null;
+  }
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        Date
+      </p>
+      <p className="mt-1 text-sm font-semibold text-slate-900">{label}</p>
+
+      <div className="mt-3">
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Close
+        </p>
+        <p className="mt-1 text-sm font-semibold text-sky-700">
+          {formatPriceUsd(payload[0].value)}
+        </p>
+      </div>
+    </div>
+  );
+}
 export default function PriceHistoryChart({
   priceHistory,
 }: PriceHistoryChartProps) {
@@ -47,7 +76,7 @@ export default function PriceHistoryChart({
                 data={chartData}
                 margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis
                   dataKey="formattedDate"
                   minTickGap={32}
@@ -57,14 +86,11 @@ export default function PriceHistoryChart({
                   tick={{ fontSize: 12 }}
                   tickFormatter={(value) => Number(value).toFixed(0)}
                 />
-                <Tooltip
-                  formatter={(value: number | string) => formatPriceUsd(value)}
-                  labelFormatter={(label) => `Date: ${label}`}
-                />
+                <Tooltip content={<CustomTooltip />} />
                 <Line
                   type="monotone"
                   dataKey="close"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   dot={false}
                   activeDot={{ r: 5 }}
                 />
