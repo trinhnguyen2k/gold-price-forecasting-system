@@ -61,5 +61,5 @@ export const chatBotStyles = {
   clearButton:
     "rounded-full border border-[var(--chat-card-border)] bg-transparent px-4 py-2 text-[var(--muted-color)] transition-all duration-200 hover:border-[var(--blue-accent)] hover:bg-[rgba(29,120,193,0.08)] hover:text-[var(--text-color)]",
   submitButton:
-    "inline-flex items-center gap-2 rounded-full border border-[var(--chat-button-border)] bg-[var(--chat-button-bg)] px-5 py-2.5 text-[var(--chat-button-text)] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[var(--chat-button-hover)] hover:shadow-[0_10px_24px_rgba(0,0,0,0.24)]",
+    "inline-flex items-center gap-2 rounded-full border border-[var(--chat-button-border)] bg-[var(--chat-button-bg)] px-5 py-2.5 text-[var(--chat-button-text)] transition-colors duration-200 hover:bg-[var(--chat-button-hover)]",
 };
