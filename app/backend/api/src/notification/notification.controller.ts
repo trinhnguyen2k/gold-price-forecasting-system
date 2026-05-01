@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
+import { NotificationService } from './notification.service';
 
 @Controller('notification')
-export class NotificationController {}
+export class NotificationController {
+  constructor(private readonly notificationService: NotificationService) {}
+
+  @Post('send-test')
+  async sendTestNotification() {
+    return this.notificationService.sendTestNotification();
+  }
+}
