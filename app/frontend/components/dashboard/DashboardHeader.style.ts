@@ -1,6 +1,6 @@
 export const dashboardHeaderStyles = {
   wrapper:
-    "sticky top-0 z-40 border-b border-white/10 bg-[#0B1F3A] text-white shadow-sm",
+    "sticky top-0 z-40 border-b border-white/10 bg-[var(--header-bg)] text-white shadow-sm",
 
   inner:
     "mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 lg:px-8",
@@ -21,5 +21,5 @@ export const dashboardHeaderStyles = {
   themeButton:
     "inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white transition hover:bg-white/20",
 
-  themeButtonActive: "bg-amber-400 text-slate-950 hover:bg-amber-300",
+  themeButtonActive: "bg-[var(--gold-accent)] text-slate-950 hover:opacity-90",
 };

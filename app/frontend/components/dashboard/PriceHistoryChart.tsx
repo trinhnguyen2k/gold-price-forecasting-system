@@ -76,20 +76,24 @@ export default function PriceHistoryChart({
                 data={chartData}
                 margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="var(--chart-grid)"
+                />
                 <XAxis
                   dataKey="formattedDate"
                   minTickGap={32}
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 12, fill: "var(--muted-color)" }}
                 />
                 <YAxis
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 12, fill: "var(--muted-color)" }}
                   tickFormatter={(value) => Number(value).toFixed(0)}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
                   type="monotone"
                   dataKey="close"
+                  stroke="var(--chart-line)"
                   strokeWidth={2.5}
                   dot={false}
                   activeDot={{ r: 5 }}

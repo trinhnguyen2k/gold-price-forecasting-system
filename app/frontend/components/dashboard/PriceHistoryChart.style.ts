@@ -1,12 +1,12 @@
 export const priceHistoryChartStyles = {
-  card: "border-slate-200 shadow-sm",
+  card: "border-[var(--border-color)] bg-[var(--card-bg)] shadow-sm",
 
-  title: "text-lg text-slate-900",
+  title: "text-lg text-[var(--title-color)]",
 
-  description: "mt-2 text-sm text-slate-600",
+  description: "mt-2 text-sm text-[var(--muted-color)]",
 
-  chartWrapper: "mt-6 h-[380px] w-full",
+  chartWrapper: "mt-6 h-[400px] w-full",
 
   emptyState:
-    "flex h-[280px] items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 text-sm text-slate-500",
+    "flex h-[280px] items-center justify-center rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--panel-bg)] px-6 text-sm text-[var(--muted-color)]",
 };
