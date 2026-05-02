@@ -1,6 +1,6 @@
 import ChatBot from "@/components/dashboard/ChatbotBox";
 import CurrentGoldPriceCard from "@/components/dashboard/CurrentGoldPriceCard";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 export default function CurrentPricePage() {
   return (

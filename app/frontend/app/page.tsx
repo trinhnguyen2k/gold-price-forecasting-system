@@ -3,7 +3,7 @@ import LatestPriceCard from "@/components/dashboard/LatestPriceCard";
 import PriceHistoryChart from "@/components/dashboard/PriceHistoryChart";
 import { getLatestForecast, getLatestPrice, getPriceHistory } from "@/libs/api";
 import ChatBot from "@/components/dashboard/ChatbotBox";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 export default async function HomePage() {
   const [latestPrice, priceHistory, latestForecast] = await Promise.all([
