@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCurrentGoldPrice } from "@/libs/api";
-import { CurrentGoldPrice } from "@/type/api.type";
-import { currentGoldPriceCardStyles } from "./CurrentGoldPriceCard.style";
 import { ChevronDown } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { CurrentGoldPrice } from "@/type/api.type";
+import { getCurrentGoldPrice } from "@/libs/api";
+import { currentGoldPriceCardStyles } from "./CurrentGoldPriceCard.style";
 
 const goldOptions = [
   { value: "XAUUSD", label: "Vàng thế giới (XAU/USD)" },
@@ -63,6 +63,28 @@ function formatThayDoi(value: number, unit: string, typeCode: string) {
   };
 }
 
+function formatChenhLechMuaBan(
+  buy: number,
+  sell: number,
+  unit: string,
+  typeCode: string,
+) {
+  if (!buy || !sell || buy <= 0 || sell <= 0) {
+    return "Chưa có dữ liệu";
+  }
+
+  const spread = sell - buy;
+
+  if (typeCode === "XAUUSD") {
+    return `${spread.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })} ${unit}`;
+  }
+
+  return `${spread.toLocaleString("vi-VN")} ${unit}`;
+}
+
 function formatThoiGianCapNhat(
   timestamp: number,
   displayDate?: string,
@@ -108,21 +130,17 @@ export default function CurrentGoldPriceCard() {
     ? formatThayDoi(data.change_buy, data.unit, data.type_code)
     : null;
 
-  const sellChange = data
-    ? formatThayDoi(data.change_sell, data.unit, data.type_code)
-    : null;
-
   return (
     <Card
       className={currentGoldPriceCardStyles.card}
       style={{
         backgroundColor: "var(--card-bg)",
-        borderColor: "rgba(148, 163, 184, 0.45)",
-        boxShadow: "0 8px 24px rgba(15, 39, 71, 0.04)",
+        borderColor: "rgba(148, 163, 184, 0.38)",
+        boxShadow: "0 10px 28px rgba(15, 39, 71, 0.05)",
       }}
     >
       <CardHeader className={currentGoldPriceCardStyles.header}>
-        <div>
+        <div className={currentGoldPriceCardStyles.headerLeft}>
           <div className={currentGoldPriceCardStyles.titleRow}>
             <CardTitle
               className={currentGoldPriceCardStyles.title}
@@ -130,17 +148,25 @@ export default function CurrentGoldPriceCard() {
             >
               Giá vàng hiện tại
             </CardTitle>
+
+            {data?.name && (
+              <span
+                className={currentGoldPriceCardStyles.nameText}
+                style={{ color: "var(--muted-color)" }}
+              >
+                {data.name}
+              </span>
+            )}
           </div>
 
-          {data?.name && (
-            <p
-              className={currentGoldPriceCardStyles.nameText}
-              style={{ color: "var(--muted-color)" }}
-            >
-              {data.name}
-            </p>
-          )}
+          <p
+            className={currentGoldPriceCardStyles.description}
+            style={{ color: "var(--muted-color)" }}
+          >
+            Dữ liệu thời gian thực từ nguồn vang.today
+          </p>
         </div>
+
         <div className={currentGoldPriceCardStyles.selectWrapper}>
           <select
             value={selectedType}
@@ -148,7 +174,7 @@ export default function CurrentGoldPriceCard() {
             className={currentGoldPriceCardStyles.select}
             style={{
               backgroundColor: "var(--panel-bg)",
-              borderColor: "var(--border-color)",
+              borderColor: "rgba(148, 163, 184, 0.32)",
               color: "var(--text-color)",
             }}
           >
@@ -158,6 +184,7 @@ export default function CurrentGoldPriceCard() {
               </option>
             ))}
           </select>
+
           <ChevronDown
             className={currentGoldPriceCardStyles.selectIcon}
             style={{ color: "var(--muted-color)" }}
@@ -165,7 +192,7 @@ export default function CurrentGoldPriceCard() {
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className={currentGoldPriceCardStyles.content}>
         {isLoading && (
           <p
             className={currentGoldPriceCardStyles.loadingText}
@@ -185,134 +212,144 @@ export default function CurrentGoldPriceCard() {
         )}
 
         {!isLoading && !errorMessage && data && (
-          <div className={currentGoldPriceCardStyles.grid}>
-            <div
-              className={currentGoldPriceCardStyles.statBox}
-              style={{
-                backgroundColor: "var(--gold-accent-soft)",
-                borderColor: "var(--gold-border-soft)",
-              }}
-            >
-              <p
-                className={currentGoldPriceCardStyles.statLabel}
-                style={{ color: "var(--text-color)" }}
-              >
-                Giá mua vào
-              </p>
-              <p
-                className={currentGoldPriceCardStyles.statValue}
-                style={{ color: "var(--gold-accent)" }}
-              >
-                {formatGia(data.buy, data.unit, data.type_code)}
-              </p>
-              <p
-                className={currentGoldPriceCardStyles.statHint}
-                style={{ color: "var(--muted-color)" }}
-              >
-                {data.name} • Mã {data.type_code}
-              </p>
-            </div>
-
-            <div
-              className={currentGoldPriceCardStyles.statBox}
-              style={{
-                backgroundColor: "var(--blue-accent-soft)",
-                borderColor: "var(--blue-border-soft)",
-              }}
-            >
-              <p
-                className={currentGoldPriceCardStyles.statLabel}
-                style={{ color: "var(--text-color)" }}
-              >
-                Giá bán ra
-              </p>
-              <p
-                className={currentGoldPriceCardStyles.statValue}
-                style={{ color: "var(--blue-accent)" }}
-              >
-                {formatGia(data.sell, data.unit, data.type_code)}
-              </p>
-              <p
-                className={currentGoldPriceCardStyles.statHint}
-                style={{ color: "var(--muted-color)" }}
-              >
-                Dữ liệu thời gian thực từ nguồn {data.source}
-              </p>
-
-              {sellChange && sellChange.tone !== "neutral" && (
-                <div className={currentGoldPriceCardStyles.statusRow}>
-                  <span
-                    className={currentGoldPriceCardStyles.statusBadge}
-                    style={{
-                      backgroundColor:
-                        sellChange.tone === "positive"
-                          ? "var(--success-bg)"
-                          : "var(--warning-bg)",
-                      color:
-                        sellChange.tone === "positive"
-                          ? "var(--success-text)"
-                          : "var(--warning-text)",
-                    }}
-                  >
-                    Thay đổi: {sellChange.text}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <div
-              className={currentGoldPriceCardStyles.metaBox}
-              style={{
-                backgroundColor: "var(--panel-bg)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <p
-                className={currentGoldPriceCardStyles.metaLabel}
-                style={{ color: "var(--muted-color)" }}
-              >
-                Thay đổi
-              </p>
-              <p
-                className={currentGoldPriceCardStyles.metaValue}
+          <>
+            <div className={currentGoldPriceCardStyles.topGrid}>
+              <div
+                className={currentGoldPriceCardStyles.statBox}
                 style={{
-                  color:
-                    buyChange?.tone === "positive"
-                      ? "var(--success-text)"
-                      : buyChange?.tone === "negative"
-                        ? "var(--warning-text)"
-                        : "var(--title-color)",
+                  backgroundColor: "var(--gold-accent-soft)",
+                  borderColor: "rgba(216, 155, 29, 0.22)",
                 }}
               >
-                {buyChange ? buyChange.text : "Chưa có dữ liệu"}
-              </p>
+                <p
+                  className={currentGoldPriceCardStyles.statLabel}
+                  style={{ color: "var(--text-color)" }}
+                >
+                  Giá mua vào
+                </p>
+                <p
+                  className={currentGoldPriceCardStyles.statValue}
+                  style={{ color: "var(--gold-accent)" }}
+                >
+                  {formatGia(data.buy, data.unit, data.type_code)}
+                </p>
+                <p
+                  className={currentGoldPriceCardStyles.statHint}
+                  style={{ color: "var(--muted-color)" }}
+                >
+                  {data.name} • Mã {data.type_code}
+                </p>
+              </div>
+
+              <div
+                className={currentGoldPriceCardStyles.statBox}
+                style={{
+                  backgroundColor: "var(--blue-accent-soft)",
+                  borderColor: "rgba(92, 200, 255, 0.22)",
+                }}
+              >
+                <p
+                  className={currentGoldPriceCardStyles.statLabel}
+                  style={{ color: "var(--text-color)" }}
+                >
+                  Giá bán ra
+                </p>
+                <p
+                  className={currentGoldPriceCardStyles.statValue}
+                  style={{ color: "var(--blue-accent)" }}
+                >
+                  {formatGia(data.sell, data.unit, data.type_code)}
+                </p>
+                <p
+                  className={currentGoldPriceCardStyles.statHint}
+                  style={{ color: "var(--muted-color)" }}
+                >
+                  Dữ liệu thời gian thực từ nguồn vang.today
+                </p>
+              </div>
             </div>
 
-            <div
-              className={currentGoldPriceCardStyles.metaBox}
-              style={{
-                backgroundColor: "var(--panel-bg)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <p
-                className={currentGoldPriceCardStyles.metaLabel}
-                style={{ color: "var(--muted-color)" }}
+            <div className={currentGoldPriceCardStyles.bottomGrid}>
+              <div
+                className={currentGoldPriceCardStyles.metaBox}
+                style={{
+                  backgroundColor: "var(--panel-bg)",
+                  borderColor: "rgba(148, 163, 184, 0.24)",
+                }}
               >
-                Cập nhật lúc
-              </p>
-              <p
-                className={currentGoldPriceCardStyles.metaValue}
-                style={{ color: "var(--title-color)" }}
+                <p
+                  className={currentGoldPriceCardStyles.metaLabel}
+                  style={{ color: "var(--muted-color)" }}
+                >
+                  Thay đổi
+                </p>
+                <p
+                  className={currentGoldPriceCardStyles.metaValue}
+                  style={{
+                    color:
+                      buyChange?.tone === "positive"
+                        ? "var(--success-text)"
+                        : buyChange?.tone === "negative"
+                          ? "var(--warning-text)"
+                          : "var(--title-color)",
+                  }}
+                >
+                  {buyChange ? buyChange.text : "Chưa có dữ liệu"}
+                </p>
+              </div>
+
+              <div
+                className={currentGoldPriceCardStyles.metaBox}
+                style={{
+                  backgroundColor: "var(--panel-bg)",
+                  borderColor: "rgba(148, 163, 184, 0.24)",
+                }}
               >
-                {formatThoiGianCapNhat(
-                  data.update_time,
-                  data.display_date,
-                  data.display_time,
-                )}
-              </p>
+                <p
+                  className={currentGoldPriceCardStyles.metaLabel}
+                  style={{ color: "var(--muted-color)" }}
+                >
+                  Chênh lệch mua/bán
+                </p>
+                <p
+                  className={currentGoldPriceCardStyles.metaValue}
+                  style={{ color: "var(--title-color)" }}
+                >
+                  {formatChenhLechMuaBan(
+                    data.buy,
+                    data.sell,
+                    data.unit,
+                    data.type_code,
+                  )}
+                </p>
+              </div>
+
+              <div
+                className={currentGoldPriceCardStyles.metaBox}
+                style={{
+                  backgroundColor: "var(--panel-bg)",
+                  borderColor: "rgba(148, 163, 184, 0.24)",
+                }}
+              >
+                <p
+                  className={currentGoldPriceCardStyles.metaLabel}
+                  style={{ color: "var(--muted-color)" }}
+                >
+                  Cập nhật lúc
+                </p>
+                <p
+                  className={currentGoldPriceCardStyles.metaValue}
+                  style={{ color: "var(--title-color)" }}
+                >
+                  {formatThoiGianCapNhat(
+                    data.update_time,
+                    data.display_date,
+                    data.display_time,
+                  )}
+                </p>
+              </div>
             </div>
-          </div>
+          </>
         )}
       </CardContent>
     </Card>

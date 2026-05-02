@@ -1,34 +1,32 @@
 export const currentGoldPriceCardStyles = {
   card: "shadow-sm",
-  header: "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between",
+  header: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between",
 
+  headerLeft: "min-w-0",
   titleRow: "flex flex-wrap items-center gap-3",
-  title: "text-lg font-semibold",
-  nameText: "text-sm font-medium",
+  title: "text-[30px] font-semibold leading-tight",
+  nameText: "text-base font-medium",
 
-  description: "mt-1 text-sm",
+  description: "mt-3 text-sm",
 
-  selectWrapper: "relative min-w-[220px]",
+  selectWrapper: "relative w-full lg:w-[260px]",
   select:
-    "h-10 w-full appearance-none rounded-xl border pl-3 pr-12 text-sm outline-none transition-colors",
+    "h-12 w-full appearance-none rounded-2xl border pl-4 pr-12 text-sm outline-none transition-colors",
   selectIcon:
     "pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2",
 
-  grid: "mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2",
+  content: "space-y-5",
 
-  statBox: "rounded-2xl border p-5",
-  statLabel: "text-sm font-medium",
-  statValue: "mt-2 text-3xl font-bold tracking-tight",
-  statHint: "mt-2 text-sm",
+  topGrid: "grid grid-cols-1 gap-4 xl:grid-cols-2",
+  statBox: "rounded-[22px] border px-7 py-7",
+  statLabel: "text-[15px] font-medium",
+  statValue: "mt-4 text-[28px] font-bold leading-tight tracking-tight",
+  statHint: "mt-4 text-[15px] leading-6",
 
-  metaGrid: "grid grid-cols-1 gap-4 md:grid-cols-2",
-  metaBox: "rounded-2xl border p-4",
+  bottomGrid: "grid grid-cols-1 gap-4 md:grid-cols-3",
+  metaBox: "rounded-2xl border px-5 py-5",
   metaLabel: "text-xs font-medium uppercase tracking-wide",
-  metaValue: "mt-2 text-sm font-semibold",
-
-  statusRow: "mt-2 flex flex-wrap items-center gap-2",
-  statusBadge:
-    "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
+  metaValue: "mt-3 text-[15px] font-semibold leading-6",
 
   loadingText: "text-sm",
   errorText: "text-sm",
