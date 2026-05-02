@@ -6,6 +6,7 @@ import { DatabaseModule } from 'src/database/database.module';
 @Module({
   imports: [DatabaseModule],
   controllers: [ForecastController],
-  providers: [ForecastService]
+  providers: [ForecastService],
+  exports: [ForecastService],
 })
 export class ForecastModule {}

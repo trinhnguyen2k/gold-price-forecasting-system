@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+import { PricesModule } from '../prices/prices.module';
+import { ForecastModule } from '../forecast/forecast.module';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
-import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [ConfigModule, PricesModule, ForecastModule],
   controllers: [NotificationController],
-  providers: [NotificationService]
+  providers: [NotificationService],
 })
 export class NotificationModule {}

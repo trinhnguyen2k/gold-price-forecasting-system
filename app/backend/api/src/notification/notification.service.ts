@@ -1,116 +1,129 @@
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
-import { formatDateDdMmYyyy, formatPriceUsd } from 'src/common/utils/format.utils';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Cron } from '@nestjs/schedule';
+
+import { PricesService } from '../prices/prices.service';
+import { ForecastService } from '../forecast/forecast.service';
 
 @Injectable()
 export class NotificationService {
-    constructor(private readonly databaseService: DatabaseService) { }
+  private readonly logger = new Logger(NotificationService.name);
 
-    async sendTestNotification() {
-        const settingsRows = await this.databaseService.query(
-            `
-      SELECT
-        id,
-        channel_type,
-        discord_webhook,
-        frequency,
-        notify_type,
-        is_enabled,
-        last_sent_at,
-        created_at,
-        updated_at
-      FROM notification_settings
-      WHERE is_enabled = true
-      ORDER BY id ASC
-      LIMIT 1
-      `,
-        );
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly pricesService: PricesService,
+    private readonly forecastService: ForecastService,
+  ) {}
 
-        const setting = settingsRows[0] ?? null;
+  private formatPriceUsd(value: number | string): string {
+    const numericValue = Number(value);
+    return `${numericValue.toFixed(2)} USD`;
+  }
 
-        if (!setting) {
-            return {
-                message: 'Chưa có cấu hình notification đang bật trong hệ thống.',
-            };
-        }
+  private formatDateDdMmYyyy(value: string | Date): string {
+    const date = new Date(value);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
 
-        const latestPriceRows = await this.databaseService.query(
-            `
-      SELECT
-        price_date,
-        close
-      FROM gold_prices
-      ORDER BY price_date DESC
-      LIMIT 1
-      `,
-        );
+    return `${day}/${month}/${year}`;
+  }
 
-        const latestPrice = latestPriceRows[0] ?? null;
+  private buildDiscordMessage(params: {
+    latestClose: number;
+    latestPriceDate: string | Date;
+    forecastPrice: number;
+    forecastTargetDate: string | Date;
+    difference: number;
+  }): string {
+    const {
+      latestClose,
+      latestPriceDate,
+      forecastPrice,
+      forecastTargetDate,
+      difference,
+    } = params;
 
-        const latestRunRows = await this.databaseService.query(
-            `
-      SELECT
-        id,
-        model_name,
-        forecast_date
-      FROM forecast_runs
-      ORDER BY forecast_date DESC, id DESC
-      LIMIT 1
-      `,
-        );
+    const differenceText =
+      difference > 0
+        ? `+${difference.toFixed(2)} USD`
+        : `${difference.toFixed(2)} USD`;
 
-        const latestRun = latestRunRows[0] ?? null;
+    const reportDate = this.formatDateDdMmYyyy(latestPriceDate);
+    return [
+      `📢  **Báo cáo giá vàng ngày  ${reportDate}**`,
+      '',
+      `- Giá đóng cửa gần nhất: **${this.formatPriceUsd(latestClose)}**`,
+      `- Ngày dữ liệu gần nhất: **${this.formatDateDdMmYyyy(latestPriceDate)}**`,
+      `- Ngày mục tiêu: **${this.formatDateDdMmYyyy(forecastTargetDate)}**`,
+      `- Dự báo ngày kế tiếp: **${this.formatPriceUsd(forecastPrice)}**`,
+      `- Chênh lệch dự báo so với giá đóng cửa: **${differenceText}**`,
+    ].join('\n');
+  }
 
-        let latestForecast: {
-            target_date: string | Date;
-            predicted_close: number;
-        } | null = null;
+  async sendDailyDiscordNotification(): Promise<void> {
+    const webhookUrl = this.configService.get<string>('DISCORD_WEBHOOK_URL');
 
-        if (latestRun) {
-            const latestForecastRows = await this.databaseService.query(
-                `
-        SELECT
-          target_date,
-          predicted_close
-        FROM forecast_results
-        WHERE forecast_run_id = $1
-        ORDER BY target_date ASC
-        LIMIT 1
-        `,
-                [latestRun.id],
-            );
-
-            latestForecast = latestForecastRows[0] ?? null;
-        }
-
-        const latestPriceText = latestPrice
-            ? `Giá vàng mới nhất là ${formatPriceUsd(latestPrice.close)} tại ngày ${formatDateDdMmYyyy(latestPrice.price_date)}.`
-            : 'Hiện chưa có dữ liệu giá vàng mới nhất.';
-
-        const latestForecastText =
-            latestRun && latestForecast
-                ? `Dự báo gần nhất từ mô hình ${latestRun.model_name} cho ngày ${formatDateDdMmYyyy(latestForecast.target_date)} là ${formatPriceUsd(latestForecast.predicted_close)}.`
-                : 'Hiện chưa có dữ liệu forecast mới nhất.';
-
-        const content = `${latestPriceText} ${latestForecastText}`;
-
-        await this.databaseService.query(
-            `
-      UPDATE notification_settings
-      SET last_sent_at = CURRENT_TIMESTAMP,
-          updated_at = CURRENT_TIMESTAMP
-      WHERE id = $1
-      `,
-            [setting.id],
-        );
-
-        return {
-            message: 'Thông báo đã được tạo thành công (MVP, chưa gửi webhook thật).',
-            notification: {
-                channel_type: setting.channel_type,
-                notify_type: setting.notify_type,
-                content,
-            },
-        };
+    if (!webhookUrl) {
+      this.logger.warn(
+        'DISCORD_WEBHOOK_URL is missing. Skip sending Discord notification.',
+      );
+      return;
     }
+
+    const latestPrice = await this.pricesService.getLatestPrice();
+    const latestForecast = await this.forecastService.getLatestForecast();
+
+    const firstForecast = latestForecast?.results?.[0];
+
+    if (!latestPrice || !firstForecast) {
+      throw new InternalServerErrorException(
+        'Không đủ dữ liệu để gửi thông báo Discord.',
+      );
+    }
+
+    const latestClose = Number(latestPrice.close);
+    const forecastPrice = Number(firstForecast.predicted_close);
+    const difference = forecastPrice - latestClose;
+
+    const content = this.buildDiscordMessage({
+      latestClose,
+      latestPriceDate: latestPrice.price_date,
+      forecastPrice,
+      forecastTargetDate: firstForecast.target_date,
+      difference,
+    });
+
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      this.logger.error(
+        `Discord webhook failed: ${response.status} - ${errorText}`,
+      );
+      throw new InternalServerErrorException(
+        `Gửi Discord webhook thất bại: ${response.status}`,
+      );
+    }
+
+    this.logger.log('Discord notification sent successfully.');
+  }
+
+  @Cron('0 0 8 * * *', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+  })
+  async handleDailyDiscordNotification() {
+    this.logger.log('Running daily Discord notification job...');
+    await this.sendDailyDiscordNotification();
+  }
 }
