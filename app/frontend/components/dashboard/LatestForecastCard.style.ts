@@ -74,4 +74,7 @@ export const latestForecastCardStyles = {
     "mt-2 text-[0.9rem] font-medium leading-none text-[var(--muted-color)]",
 
   emptyText: "text-sm text-[var(--muted-color)]",
+  differenceBox: "rounded-xl border p-4",
+  differenceLabel: "text-xs font-medium uppercase tracking-wide",
+  differenceValue: "mt-2 text-base font-semibold",
 };

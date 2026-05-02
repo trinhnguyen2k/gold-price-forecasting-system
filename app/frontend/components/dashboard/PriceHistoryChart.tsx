@@ -34,13 +34,13 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
       <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-        Date
+        Ngày
       </p>
       <p className="mt-1 text-sm font-semibold text-slate-900">{label}</p>
 
       <div className="mt-3">
         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-          Close
+          Giá đóng cửa
         </p>
         <p className="mt-1 text-sm font-semibold text-sky-700">
           {formatPriceUsd(payload[0].value)}
@@ -61,7 +61,7 @@ export default function PriceHistoryChart({
     <Card className={priceHistoryChartStyles.card}>
       <CardHeader>
         <CardTitle className={priceHistoryChartStyles.title}>
-          Price History Chart
+          Biểu đồ lịch sử giá vàng
         </CardTitle>
         <p className={priceHistoryChartStyles.description}>
           Biểu đồ thể hiện lịch sử giá đóng cửa vàng theo thời gian.
@@ -108,7 +108,7 @@ export default function PriceHistoryChart({
                 <LineChartIcon className="h-5 w-5" />
               </div>
               <p className="mt-3 font-medium text-slate-700">
-                No price history data available
+                Dữ liệu lịch sử giá chưa sẵn sàng để hiển thị biểu đồ.
               </p>
               <p className="mt-1 max-w-md text-sm text-slate-500">
                 Dữ liệu lịch sử giá chưa sẵn sàng để hiển thị biểu đồ.

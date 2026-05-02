@@ -2,9 +2,8 @@ import { TrendingUp } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateDdMmYyyy, formatPriceUsd } from "@/libs/format";
-
+import type { LatestPrice } from "@/type/api.type";
 import { latestPriceCardStyles } from "./LatestPriceCard.style";
-import { LatestPrice } from "@/type/api.type";
 
 interface LatestPriceCardProps {
   latestPrice: LatestPrice;
@@ -55,7 +54,7 @@ export default function LatestPriceCard({ latestPrice }: LatestPriceCardProps) {
             className={latestPriceCardStyles.title}
             style={{ color: "var(--title-color)" }}
           >
-            Latest Price
+            Giá gần nhất
           </CardTitle>
           <p
             className={latestPriceCardStyles.description}
@@ -88,7 +87,7 @@ export default function LatestPriceCard({ latestPrice }: LatestPriceCardProps) {
             className={latestPriceCardStyles.highlightLabel}
             style={{ color: "var(--text-color)" }}
           >
-            Closing Price
+            Giá đóng cửa
           </p>
           <p
             className={latestPriceCardStyles.highlightValue}
@@ -100,15 +99,15 @@ export default function LatestPriceCard({ latestPrice }: LatestPriceCardProps) {
             className={latestPriceCardStyles.highlightDate}
             style={{ color: "var(--muted-color)" }}
           >
-            Updated on {formatDateDdMmYyyy(latestPrice.price_date)}
+            Cập nhật ngày {formatDateDdMmYyyy(latestPrice.price_date)}
           </p>
         </div>
 
         <div className={latestPriceCardStyles.statsGrid}>
-          <StatItem label="Open" value={formatPriceUsd(latestPrice.open)} />
-          <StatItem label="High" value={formatPriceUsd(latestPrice.high)} />
-          <StatItem label="Low" value={formatPriceUsd(latestPrice.low)} />
-          <StatItem label="Source" value={latestPrice.source ?? "N/A"} />
+          <StatItem label="Mở cửa" value={formatPriceUsd(latestPrice.open)} />
+          <StatItem label="Cao nhất" value={formatPriceUsd(latestPrice.high)} />
+          <StatItem label="Thấp nhất" value={formatPriceUsd(latestPrice.low)} />
+          <StatItem label="Nguồn" value={latestPrice.source ?? "N/A"} />
         </div>
       </CardContent>
     </Card>

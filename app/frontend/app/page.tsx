@@ -20,7 +20,10 @@ export default async function HomePage() {
 
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-stretch">
           <LatestPriceCard latestPrice={latestPrice} />
-          <LatestForecastCard latestForecast={latestForecast} />
+          <LatestForecastCard
+            latestForecast={latestForecast}
+            latestClosingPrice={latestPrice.close}
+          />
         </div>
 
         <div className="mt-8">
