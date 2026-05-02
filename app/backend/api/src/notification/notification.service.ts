@@ -33,12 +33,57 @@ export class NotificationService {
     return `${day}/${month}/${year}`;
   }
 
+  private async getCurrentGoldFromVangToday(type: string) {
+    const url = `https://www.vang.today/api/prices?type=${encodeURIComponent(type)}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new InternalServerErrorException(
+        `Không thể lấy dữ liệu hiện tại từ vang.today cho ${type}`,
+      );
+    }
+
+    const rawData = await response.json();
+
+    if (!rawData?.success) {
+      throw new InternalServerErrorException(
+        rawData?.message || `Dữ liệu vang.today cho ${type} không hợp lệ`,
+      );
+    }
+
+    return {
+      type: rawData.type,
+      name: rawData.name,
+      buy: Number(rawData.buy ?? 0),
+      sell: Number(rawData.sell ?? 0),
+      changeBuy: Number(rawData.change_buy ?? 0),
+      changeSell: Number(rawData.change_sell ?? 0),
+      date: rawData.date,
+      time: rawData.time,
+    };
+  }
+
   private buildDiscordMessage(params: {
     latestClose: number;
     latestPriceDate: string | Date;
     forecastPrice: number;
     forecastTargetDate: string | Date;
     difference: number;
+    currentWorldGold: {
+      name: string;
+      buy: number;
+      sell: number;
+      date: string;
+      time: string;
+    };
+    currentSjcGold: {
+      name: string;
+      buy: number;
+      sell: number;
+      date: string;
+      time: string;
+    };
   }): string {
     const {
       latestClose,
@@ -46,22 +91,53 @@ export class NotificationService {
       forecastPrice,
       forecastTargetDate,
       difference,
+      currentWorldGold,
+      currentSjcGold,
     } = params;
+
+    const reportDate = this.formatDateDdMmYyyy(latestPriceDate);
 
     const differenceText =
       difference > 0
         ? `+${difference.toFixed(2)} USD`
         : `${difference.toFixed(2)} USD`;
 
-    const reportDate = this.formatDateDdMmYyyy(latestPriceDate);
+    const formatCurrentPrice = (value: number, unit: string) => {
+      if (!value || value <= 0) {
+        return 'Chưa có dữ liệu';
+      }
+
+      return `${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })} ${unit}`;
+    };
+
+    const formatCurrentPriceVnd = (value: number) => {
+      if (!value || value <= 0) {
+        return 'Chưa có dữ liệu';
+      }
+
+      return `${value.toLocaleString('vi-VN')} VND/lượng`;
+    };
+
     return [
-      `📢  **Báo cáo giá vàng ngày  ${reportDate}**`,
+      `📢 **Báo cáo giá vàng ngày ${reportDate}**`,
       '',
       `- Giá đóng cửa gần nhất: **${this.formatPriceUsd(latestClose)}**`,
       `- Ngày dữ liệu gần nhất: **${this.formatDateDdMmYyyy(latestPriceDate)}**`,
       `- Ngày mục tiêu: **${this.formatDateDdMmYyyy(forecastTargetDate)}**`,
       `- Dự báo ngày kế tiếp: **${this.formatPriceUsd(forecastPrice)}**`,
       `- Chênh lệch dự báo so với giá đóng cửa: **${differenceText}**`,
+      '',
+      `🌍 **${currentWorldGold.name}**`,
+      `- Giá mua hiện tại: **${formatCurrentPrice(currentWorldGold.buy, 'USD/oz')}**`,
+      `- Thời gian cập nhật: **${currentWorldGold.time} ${currentWorldGold.date}**`,
+      '',
+      `🇻🇳 **${currentSjcGold.name}**`,
+      `- Giá mua hiện tại: **${formatCurrentPriceVnd(currentSjcGold.buy)}**`,
+      `- Giá bán hiện tại: **${formatCurrentPriceVnd(currentSjcGold.sell)}**`,
+      `- Thời gian cập nhật: **${currentSjcGold.time} ${currentSjcGold.date}**`,
     ].join('\n');
   }
 
@@ -86,6 +162,9 @@ export class NotificationService {
       );
     }
 
+    const currentWorldGold = await this.getCurrentGoldFromVangToday('XAUUSD');
+    const currentSjcGold = await this.getCurrentGoldFromVangToday('SJL1L10');
+
     const latestClose = Number(latestPrice.close);
     const forecastPrice = Number(firstForecast.predicted_close);
     const difference = forecastPrice - latestClose;
@@ -96,6 +175,8 @@ export class NotificationService {
       forecastPrice,
       forecastTargetDate: firstForecast.target_date,
       difference,
+      currentWorldGold,
+      currentSjcGold,
     });
 
     const response = await fetch(webhookUrl, {
