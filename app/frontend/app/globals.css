@@ -31,8 +31,8 @@ body {
   --success-bg: #eaf8f0;
   --success-text: #18794e;
 
-  --warning-bg: #fff4df;
-  --warning-text: #b76e00;
+  --warning-bg: #fee2e2;
+  --warning-text: #dc2626;
 
   --chat-fab-bg: #12304d;
   --chat-fab-border: rgba(92, 200, 255, 0.34);
@@ -91,8 +91,8 @@ body {
   --success-bg: rgba(52, 199, 89, 0.12);
   --success-text: #7ee2a8;
 
-  --warning-bg: rgba(242, 193, 78, 0.12);
-  --warning-text: #f7cf72;
+  --warning-bg: rgba(248, 113, 113, 0.14);
+  --warning-text: #f87171;
 
   --chat-user-bg: #0b1f3a;
   --chat-bot-bg: #12243c;

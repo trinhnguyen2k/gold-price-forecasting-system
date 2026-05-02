@@ -61,3 +61,17 @@ export interface ChatAskResponse {
   answer: string;
   is_in_scope: boolean;
 }
+
+export interface CurrentGoldPrice {
+  type_code: string;
+  name: string;
+  buy: number;
+  sell: number;
+  change_buy: number;
+  change_sell: number;
+  update_time: number;
+  display_time: string;
+  display_date: string;
+  unit: string;
+  source: string;
+}

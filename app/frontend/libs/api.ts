@@ -2,6 +2,7 @@
 
 import {
   ChatAskResponse,
+  CurrentGoldPrice,
   LatestForecastResponse,
   LatestPrice,
   PriceHistoryItem,
@@ -57,4 +58,17 @@ export async function askChatbot(question: string): Promise<ChatAskResponse> {
   });
 
   return handleResponse<ChatAskResponse>(response);
+}
+
+export async function getCurrentGoldPrice(
+  type = "XAUUSD",
+): Promise<CurrentGoldPrice> {
+  const response = await fetch(
+    `${API_BASE_URL}/prices/current?type=${encodeURIComponent(type)}`,
+    {
+      cache: "no-store",
+    },
+  );
+
+  return handleResponse<CurrentGoldPrice>(response);
 }
