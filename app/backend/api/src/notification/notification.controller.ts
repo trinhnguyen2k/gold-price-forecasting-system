@@ -5,13 +5,13 @@ import { NotificationService } from './notification.service';
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
-  @Post('send-test')
+  @Post('send-notification')
   async sendTestDiscordNotification() {
     await this.notificationService.sendDailyDiscordNotification();
 
     return {
       success: true,
-      message: 'Đã gửi test notification lên Discord.',
+      message: 'Đã gửi notification lên Discord.',
     };
   }
 }
