@@ -6,6 +6,7 @@ import {
   LatestForecastResponse,
   LatestPrice,
   PriceHistoryItem,
+  WorldGoldHistoryItem,
 } from "@/type/api.type";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -71,4 +72,17 @@ export async function getCurrentGoldPrice(
   );
 
   return handleResponse<CurrentGoldPrice>(response);
+}
+
+export async function getWorldGoldHistory(
+  days = 10,
+): Promise<WorldGoldHistoryItem[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/prices/world-history?days=${days}`,
+    {
+      cache: "no-store",
+    },
+  );
+
+  return handleResponse<WorldGoldHistoryItem[]>(response);
 }

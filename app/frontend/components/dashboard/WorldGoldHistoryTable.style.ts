@@ -1,0 +1,17 @@
+export const worldGoldHistoryTableStyles = {
+  card: "border shadow-sm",
+  titleRow: "flex items-center justify-between gap-3",
+  title: "text-lg font-semibold",
+  description: "mt-2 text-sm",
+  tableWrapper: "mt-6 overflow-x-auto",
+  table: "min-w-full border-separate border-spacing-0",
+  thead: "",
+  headRow: "",
+  th: "border-b px-4 py-3 text-left text-sm font-semibold",
+  tr: "transition-colors",
+  td: "border-b px-4 py-3 text-sm",
+  priceText: "font-semibold",
+  changePositive: "font-semibold",
+  changeNegative: "font-semibold",
+  changeNeutral: "font-semibold",
+};

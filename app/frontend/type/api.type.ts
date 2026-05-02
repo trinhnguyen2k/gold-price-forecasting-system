@@ -75,3 +75,10 @@ export interface CurrentGoldPrice {
   unit: string;
   source: string;
 }
+
+export interface WorldGoldHistoryItem {
+  date: string;
+  price: number;
+  change: number;
+  update_time: string;
+}

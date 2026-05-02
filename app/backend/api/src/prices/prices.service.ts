@@ -73,4 +73,45 @@ export class PricesService {
       source: 'vang.today',
     };
   }
+  async getWorldGoldHistory(days = 10) {
+    const safeDays = Math.min(Math.max(days, 1), 30);
+    const url = `https://www.vang.today/api/prices?type=XAUUSD&days=${safeDays}`;
+
+    console.log('World gold history API URL:', url);
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch world gold history: ${response.status}`);
+    }
+
+    const rawData = await response.json();
+    console.log(
+      'World gold history rawData:',
+      JSON.stringify(rawData, null, 2),
+    );
+
+    if (!rawData?.success || !Array.isArray(rawData.history)) {
+      throw new Error(
+        rawData?.message || 'Lịch sử giá vàng thế giới không hợp lệ',
+      );
+    }
+
+    return rawData.history.slice(0, safeDays).map((item: any) => {
+      const worldGold = item?.prices?.XAUUSD;
+
+      if (!worldGold) {
+        throw new Error(`Thiếu dữ liệu XAUUSD tại ngày ${item?.date}`);
+      }
+
+      return {
+        date: item.date,
+        price: Number(worldGold.buy ?? 0),
+        change: Number(worldGold.day_change_buy ?? 0),
+        update_time: worldGold.updates ?? 0,
+        name: worldGold.name ?? 'World Gold (XAU/USD)',
+        type_code: 'XAUUSD',
+      };
+    });
+  }
 }

@@ -19,4 +19,10 @@ export class PricesController {
   async getCurrentGoldPrice(@Query('type') type?: string) {
     return this.pricesService.getCurrentGoldPrice(type ?? 'XAUUSD');
   }
+
+  @Get('world-history')
+  async getWorldGoldHistory(@Query('days') days?: string) {
+    const parsedDays = Number(days ?? 10);
+    return this.pricesService.getWorldGoldHistory(parsedDays);
+  }
 }

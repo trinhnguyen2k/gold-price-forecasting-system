@@ -25,17 +25,17 @@ export default function DashboardHeader() {
         <div className={dashboardHeaderStyles.topBarInner}>
           <div className={dashboardHeaderStyles.left}>
             <h1 className={dashboardHeaderStyles.title}>
-              Gold Price Forecast Dashboard
+              Hệ thống dự báo giá vàng
             </h1>
             <p className={dashboardHeaderStyles.subtitle}>
-              Track gold prices, forecast insights, and AI-assisted Q&amp;A
+              Theo dõi giá vàng, kết quả dự báo và hỏi đáp dữ liệu bằng AI
             </p>
           </div>
 
           <div className={dashboardHeaderStyles.right}>
             <div className={dashboardHeaderStyles.switchWrapper}>
               <span className={dashboardHeaderStyles.switchLabel}>
-                {isDark ? "Dark mode" : "Light mode"}
+                {isDark ? "Chế độ tối" : "Chế độ sáng"}
               </span>
 
               <button
@@ -45,7 +45,7 @@ export default function DashboardHeader() {
                   dashboardHeaderStyles.themeButton,
                   !isDark && dashboardHeaderStyles.themeButtonActive,
                 )}
-                aria-label="Chuyển sang light mode"
+                aria-label="Chuyển sang chế độ sáng"
               >
                 <Sun className="h-4 w-4" />
               </button>
@@ -57,7 +57,7 @@ export default function DashboardHeader() {
                   dashboardHeaderStyles.themeButton,
                   isDark && dashboardHeaderStyles.themeButtonActive,
                 )}
-                aria-label="Chuyển sang dark mode"
+                aria-label="Chuyển sang chế độ tối"
               >
                 <Moon className="h-4 w-4" />
               </button>
