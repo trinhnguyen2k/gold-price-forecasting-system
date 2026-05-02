@@ -8,9 +8,11 @@ export const currentGoldPriceCardStyles = {
 
   description: "mt-1 text-sm",
 
+  selectWrapper: "relative min-w-[220px]",
   select:
-    "h-10 min-w-[220px] rounded-xl border pl-3 pr-3 text-sm outline-none transition-colors",
-
+    "h-10 w-full appearance-none rounded-xl border pl-3 pr-12 text-sm outline-none transition-colors",
+  selectIcon:
+    "pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2",
   grid: "mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2",
 
   statBox: "rounded-2xl border p-5",

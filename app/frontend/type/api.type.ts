@@ -80,5 +80,7 @@ export interface WorldGoldHistoryItem {
   date: string;
   price: number;
   change: number;
-  update_time: string;
+  update_time: number;
+  name: string;
+  type_code: string;
 }

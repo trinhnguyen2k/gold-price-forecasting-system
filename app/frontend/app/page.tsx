@@ -4,21 +4,14 @@ import PriceHistoryChart from "@/components/dashboard/PriceHistoryChart";
 import ChatBot from "@/components/dashboard/ChatbotBox";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import WorldGoldHistoryTable from "@/components/dashboard/WorldGoldHistoryTable";
-import {
-  getLatestForecast,
-  getLatestPrice,
-  getPriceHistory,
-  getWorldGoldHistory,
-} from "@/libs/api";
+import { getLatestForecast, getLatestPrice, getPriceHistory } from "@/libs/api";
 
 export default async function HomePage() {
-  const [latestPrice, priceHistory, latestForecast, worldGoldHistory] =
-    await Promise.all([
-      getLatestPrice(),
-      getPriceHistory(),
-      getLatestForecast(),
-      getWorldGoldHistory(10),
-    ]);
+  const [latestPrice, priceHistory, latestForecast] = await Promise.all([
+    getLatestPrice(),
+    getPriceHistory(),
+    getLatestForecast(),
+  ]);
 
   return (
     <main className="min-h-screen bg-[var(--page-bg)]">
@@ -35,7 +28,7 @@ export default async function HomePage() {
         </div>
 
         <div className="mt-8">
-          <WorldGoldHistoryTable items={worldGoldHistory} />
+          <WorldGoldHistoryTable />
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCurrentGoldPrice } from "@/libs/api";
 import { CurrentGoldPrice } from "@/type/api.type";
 import { currentGoldPriceCardStyles } from "./CurrentGoldPriceCard.style";
+import { ChevronDown } from "lucide-react";
 
 const goldOptions = [
   { value: "XAUUSD", label: "Vàng thế giới (XAU/USD)" },
@@ -139,23 +140,28 @@ export default function CurrentGoldPriceCard() {
             </p>
           )}
         </div>
-
-        <select
-          value={selectedType}
-          onChange={(event) => setSelectedType(event.target.value)}
-          className={currentGoldPriceCardStyles.select}
-          style={{
-            backgroundColor: "var(--panel-bg)",
-            borderColor: "var(--border-color)",
-            color: "var(--text-color)",
-          }}
-        >
-          {goldOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <div className={currentGoldPriceCardStyles.selectWrapper}>
+          <select
+            value={selectedType}
+            onChange={(event) => setSelectedType(event.target.value)}
+            className={currentGoldPriceCardStyles.select}
+            style={{
+              backgroundColor: "var(--panel-bg)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-color)",
+            }}
+          >
+            {goldOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            className={currentGoldPriceCardStyles.selectIcon}
+            style={{ color: "var(--muted-color)" }}
+          />
+        </div>
       </CardHeader>
 
       <CardContent>
