@@ -1,17 +1,22 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { PricesService } from './prices.service';
 
 @Controller('prices')
 export class PricesController {
-    constructor(private readonly pricesService: PricesService) {}
+  constructor(private readonly pricesService: PricesService) {}
 
-    @Get('latest')
-    async getLatestPrice() {
-        return await this.pricesService.getLatestPrice();
-    }
+  @Get('latest')
+  async getLatestPrice() {
+    return await this.pricesService.getLatestPrice();
+  }
 
-    @Get('history')
-    async getPriceHistory() {
-        return await this.pricesService.getPriceHistory();
-    }
+  @Get('history')
+  async getPriceHistory() {
+    return await this.pricesService.getPriceHistory();
+  }
+
+  @Get('current')
+  async getCurrentGoldPrice(@Query('type') type?: string) {
+    return this.pricesService.getCurrentGoldPrice(type ?? 'XAUUSD');
+  }
 }
