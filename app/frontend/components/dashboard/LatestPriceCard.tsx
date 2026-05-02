@@ -1,4 +1,4 @@
-import { TrendingUp } from "lucide-react";
+import { Database, TrendingUp } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateDdMmYyyy, formatPriceUsd } from "@/libs/format";
@@ -9,32 +9,26 @@ interface LatestPriceCardProps {
   latestPrice: LatestPrice;
 }
 
-interface StatItemProps {
+interface InfoRowProps {
   label: string;
   value: string;
 }
 
-function StatItem({ label, value }: StatItemProps) {
+function InfoRow({ label, value }: InfoRowProps) {
   return (
-    <div
-      className={latestPriceCardStyles.statItem}
-      style={{
-        backgroundColor: "var(--panel-bg)",
-        borderColor: "var(--border-color)",
-      }}
-    >
-      <p
-        className={latestPriceCardStyles.statLabel}
+    <div className={latestPriceCardStyles.infoRow}>
+      <span
+        className={latestPriceCardStyles.infoLabel}
         style={{ color: "var(--muted-color)" }}
       >
         {label}
-      </p>
-      <p
-        className={latestPriceCardStyles.statValue}
+      </span>
+      <span
+        className={latestPriceCardStyles.infoValue}
         style={{ color: "var(--title-color)" }}
       >
         {value}
-      </p>
+      </span>
     </div>
   );
 }
@@ -45,7 +39,8 @@ export default function LatestPriceCard({ latestPrice }: LatestPriceCardProps) {
       className={latestPriceCardStyles.card}
       style={{
         backgroundColor: "var(--card-bg)",
-        borderColor: "var(--border-color)",
+        borderColor: "rgba(148, 163, 184, 0.45)",
+        boxShadow: "0 8px 24px rgba(15, 39, 71, 0.04)",
       }}
     >
       <CardHeader className={latestPriceCardStyles.header}>
@@ -103,11 +98,98 @@ export default function LatestPriceCard({ latestPrice }: LatestPriceCardProps) {
           </p>
         </div>
 
-        <div className={latestPriceCardStyles.statsGrid}>
-          <StatItem label="Mở cửa" value={formatPriceUsd(latestPrice.open)} />
-          <StatItem label="Cao nhất" value={formatPriceUsd(latestPrice.high)} />
-          <StatItem label="Thấp nhất" value={formatPriceUsd(latestPrice.low)} />
-          <StatItem label="Nguồn" value={latestPrice.source ?? "N/A"} />
+        <div className={latestPriceCardStyles.infoGrid}>
+          <div
+            className={latestPriceCardStyles.infoPanel}
+            style={{
+              backgroundColor: "var(--panel-bg)",
+              borderColor: "rgba(148, 163, 184, 0.35)",
+            }}
+          >
+            <p
+              className={latestPriceCardStyles.infoPanelTitle}
+              style={{ color: "var(--title-color)" }}
+            >
+              Biến động trong ngày
+            </p>
+
+            <div className={latestPriceCardStyles.infoList}>
+              <InfoRow
+                label="Mở cửa"
+                value={formatPriceUsd(latestPrice.open)}
+              />
+              <InfoRow
+                label="Cao nhất"
+                value={formatPriceUsd(latestPrice.high)}
+              />
+              <InfoRow
+                label="Thấp nhất"
+                value={formatPriceUsd(latestPrice.low)}
+              />
+            </div>
+          </div>
+
+          <div
+            className={latestPriceCardStyles.infoPanel}
+            style={{
+              backgroundColor: "var(--panel-bg)",
+              borderColor: "rgba(148, 163, 184, 0.35)",
+            }}
+          >
+            <p
+              className={latestPriceCardStyles.infoPanelTitle}
+              style={{ color: "var(--title-color)" }}
+            >
+              Thông tin dữ liệu
+            </p>
+
+            <div className={latestPriceCardStyles.infoList}>
+              <div className={latestPriceCardStyles.infoRow}>
+                <span
+                  className={latestPriceCardStyles.infoLabel}
+                  style={{ color: "var(--muted-color)" }}
+                >
+                  Nguồn
+                </span>
+                <span
+                  className={latestPriceCardStyles.sourceValue}
+                  style={{ color: "var(--title-color)" }}
+                >
+                  {latestPrice.source ?? "N/A"}
+                </span>
+              </div>
+
+              <div className={latestPriceCardStyles.infoRow}>
+                <span
+                  className={latestPriceCardStyles.infoLabel}
+                  style={{ color: "var(--muted-color)" }}
+                >
+                  Loại dữ liệu
+                </span>
+                <span
+                  className={latestPriceCardStyles.infoValue}
+                  style={{ color: "var(--title-color)" }}
+                >
+                  Giá đóng cửa
+                </span>
+              </div>
+
+              <div className={latestPriceCardStyles.infoRow}>
+                <span
+                  className={latestPriceCardStyles.infoLabel}
+                  style={{ color: "var(--muted-color)" }}
+                >
+                  Cập nhật
+                </span>
+                <span
+                  className={latestPriceCardStyles.infoValue}
+                  style={{ color: "var(--title-color)" }}
+                >
+                  {formatDateDdMmYyyy(latestPrice.price_date)}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

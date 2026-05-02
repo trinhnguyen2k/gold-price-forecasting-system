@@ -14,28 +14,30 @@ export default async function HomePage() {
   ]);
 
   return (
-    <main className="min-h-screen bg-[var(--page-bg)]">
-      <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8 lg:py-10">
-        <DashboardHeader />
+    <>
+      <DashboardHeader />
 
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-stretch">
-          <LatestPriceCard latestPrice={latestPrice} />
-          <LatestForecastCard
-            latestForecast={latestForecast}
-            latestClosingPrice={latestPrice.close}
-          />
+      <main className="min-h-screen bg-[var(--page-bg)]">
+        <div className="mx-auto w-full max-w-[1500px] px-6 py-8 lg:px-8 lg:py-10">
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2 xl:items-stretch">
+            <LatestPriceCard latestPrice={latestPrice} />
+            <LatestForecastCard
+              latestForecast={latestForecast}
+              latestClosingPrice={latestPrice.close}
+            />
+          </div>
+
+          <div className="mt-8">
+            <PriceHistoryChart priceHistory={priceHistory} />
+          </div>
+
+          <div className="mt-8">
+            <WorldGoldHistoryTable />
+          </div>
         </div>
 
-        <div className="mt-8">
-          <PriceHistoryChart priceHistory={priceHistory} />
-        </div>
-
-        <div className="mt-8">
-          <WorldGoldHistoryTable />
-        </div>
-      </div>
-
-      <ChatBot />
-    </main>
+        <ChatBot />
+      </main>
+    </>
   );
 }

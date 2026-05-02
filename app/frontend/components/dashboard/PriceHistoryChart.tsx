@@ -9,12 +9,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-import { formatDateDdMmYyyy, formatPriceUsd } from "@/libs/format";
-import { PriceHistoryItem } from "@/type/api.type";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { priceHistoryChartStyles } from "./PriceHistoryChart.style";
 import { LineChart as LineChartIcon } from "lucide-react";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDateDdMmYyyy, formatPriceUsd } from "@/libs/format";
+import type { PriceHistoryItem } from "@/type/api.type";
+import { priceHistoryChartStyles } from "./PriceHistoryChart.style";
 
 interface PriceHistoryChartProps {
   priceHistory: PriceHistoryItem[];
@@ -32,23 +32,44 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+    <div
+      className="rounded-2xl border px-4 py-3 shadow-lg"
+      style={{
+        backgroundColor: "var(--tooltip-bg)",
+        borderColor: "rgba(148, 163, 184, 0.22)",
+      }}
+    >
+      <p
+        className="text-xs font-medium uppercase tracking-wide"
+        style={{ color: "var(--muted-color)" }}
+      >
         Ngày
       </p>
-      <p className="mt-1 text-sm font-semibold text-slate-900">{label}</p>
+      <p
+        className="mt-1 text-sm font-semibold"
+        style={{ color: "var(--title-color)" }}
+      >
+        {label}
+      </p>
 
       <div className="mt-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        <p
+          className="text-xs font-medium uppercase tracking-wide"
+          style={{ color: "var(--muted-color)" }}
+        >
           Giá đóng cửa
         </p>
-        <p className="mt-1 text-sm font-semibold text-sky-700">
+        <p
+          className="mt-1 text-sm font-semibold"
+          style={{ color: "var(--blue-accent)" }}
+        >
           {formatPriceUsd(payload[0].value)}
         </p>
       </div>
     </div>
   );
 }
+
 export default function PriceHistoryChart({
   priceHistory,
 }: PriceHistoryChartProps) {
@@ -58,12 +79,25 @@ export default function PriceHistoryChart({
   }));
 
   return (
-    <Card className={priceHistoryChartStyles.card}>
+    <Card
+      className={priceHistoryChartStyles.card}
+      style={{
+        backgroundColor: "var(--card-bg)",
+        borderColor: "rgba(148, 163, 184, 0.45)",
+        boxShadow: "0 8px 24px rgba(15, 39, 71, 0.04)",
+      }}
+    >
       <CardHeader>
-        <CardTitle className={priceHistoryChartStyles.title}>
+        <CardTitle
+          className={priceHistoryChartStyles.title}
+          style={{ color: "var(--title-color)" }}
+        >
           Biểu đồ lịch sử giá vàng
         </CardTitle>
-        <p className={priceHistoryChartStyles.description}>
+        <p
+          className={priceHistoryChartStyles.description}
+          style={{ color: "var(--muted-color)" }}
+        >
           Biểu đồ thể hiện lịch sử giá đóng cửa vàng theo thời gian.
         </p>
       </CardHeader>
@@ -102,16 +136,32 @@ export default function PriceHistoryChart({
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className={priceHistoryChartStyles.emptyState}>
+          <div
+            className={priceHistoryChartStyles.emptyState}
+            style={{
+              backgroundColor: "var(--panel-bg)",
+              borderColor: "rgba(148, 163, 184, 0.28)",
+              color: "var(--muted-color)",
+            }}
+          >
             <div className="flex flex-col items-center text-center">
-              <div className="rounded-full bg-slate-100 p-3 text-slate-500">
+              <div
+                className="rounded-full p-3"
+                style={{ backgroundColor: "var(--panel-bg)" }}
+              >
                 <LineChartIcon className="h-5 w-5" />
               </div>
-              <p className="mt-3 font-medium text-slate-700">
-                Dữ liệu lịch sử giá chưa sẵn sàng để hiển thị biểu đồ.
+              <p
+                className="mt-3 font-medium"
+                style={{ color: "var(--title-color)" }}
+              >
+                Chưa có dữ liệu lịch sử giá
               </p>
-              <p className="mt-1 max-w-md text-sm text-slate-500">
-                Dữ liệu lịch sử giá chưa sẵn sàng để hiển thị biểu đồ.
+              <p
+                className="mt-1 max-w-md text-sm"
+                style={{ color: "var(--muted-color)" }}
+              >
+                Dữ liệu lịch sử giá hiện chưa sẵn sàng để hiển thị biểu đồ.
               </p>
             </div>
           </div>

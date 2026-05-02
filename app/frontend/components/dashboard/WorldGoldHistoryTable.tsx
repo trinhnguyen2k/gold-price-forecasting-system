@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import type { WorldGoldHistoryItem } from "@/type/api.type";
 import { getWorldGoldHistory } from "@/libs/api";
 import { worldGoldHistoryTableStyles } from "./WorldGoldHistoryTable.style";
-
-import { ChevronDown } from "lucide-react";
 
 const dayOptions = [10, 15, 20, 25, 30];
 
@@ -70,7 +69,8 @@ export default function WorldGoldHistoryTable() {
       className={worldGoldHistoryTableStyles.card}
       style={{
         backgroundColor: "var(--card-bg)",
-        borderColor: "var(--border-color)",
+        borderColor: "rgba(148, 163, 184, 0.45)",
+        boxShadow: "0 8px 24px rgba(15, 39, 71, 0.04)",
       }}
     >
       <CardHeader className={worldGoldHistoryTableStyles.header}>
@@ -98,7 +98,7 @@ export default function WorldGoldHistoryTable() {
             className={worldGoldHistoryTableStyles.select}
             style={{
               backgroundColor: "var(--panel-bg)",
-              borderColor: "var(--border-color)",
+              borderColor: "rgba(148, 163, 184, 0.35)",
               color: "var(--text-color)",
             }}
           >
@@ -144,7 +144,7 @@ export default function WorldGoldHistoryTable() {
                     className={worldGoldHistoryTableStyles.th}
                     style={{
                       color: "var(--muted-color)",
-                      borderColor: "var(--border-color)",
+                      borderColor: "rgba(148, 163, 184, 0.24)",
                     }}
                   >
                     Ngày
@@ -154,7 +154,7 @@ export default function WorldGoldHistoryTable() {
                     className={worldGoldHistoryTableStyles.th}
                     style={{
                       color: "var(--muted-color)",
-                      borderColor: "var(--border-color)",
+                      borderColor: "rgba(148, 163, 184, 0.24)",
                     }}
                   >
                     Giá (USD)
@@ -164,7 +164,7 @@ export default function WorldGoldHistoryTable() {
                     className={worldGoldHistoryTableStyles.th}
                     style={{
                       color: "var(--muted-color)",
-                      borderColor: "var(--border-color)",
+                      borderColor: "rgba(148, 163, 184, 0.24)",
                     }}
                   >
                     Thay đổi
@@ -174,7 +174,7 @@ export default function WorldGoldHistoryTable() {
                     className={worldGoldHistoryTableStyles.th}
                     style={{
                       color: "var(--muted-color)",
-                      borderColor: "var(--border-color)",
+                      borderColor: "rgba(148, 163, 184, 0.24)",
                     }}
                   >
                     Ngày cập nhật
@@ -183,16 +183,22 @@ export default function WorldGoldHistoryTable() {
               </thead>
 
               <tbody>
-                {items.map((item) => (
+                {items.map((item, index) => (
                   <tr
                     key={item.date}
                     className={worldGoldHistoryTableStyles.tr}
+                    style={{
+                      backgroundColor:
+                        index % 2 === 0
+                          ? "transparent"
+                          : "rgba(148, 163, 184, 0.04)",
+                    }}
                   >
                     <td
                       className={worldGoldHistoryTableStyles.td}
                       style={{
                         color: "var(--title-color)",
-                        borderColor: "var(--border-color)",
+                        borderColor: "rgba(148, 163, 184, 0.18)",
                       }}
                     >
                       {formatNgay(item.date)}
@@ -202,7 +208,7 @@ export default function WorldGoldHistoryTable() {
                       className={`${worldGoldHistoryTableStyles.td} ${worldGoldHistoryTableStyles.priceText}`}
                       style={{
                         color: "var(--title-color)",
-                        borderColor: "var(--border-color)",
+                        borderColor: "rgba(148, 163, 184, 0.18)",
                       }}
                     >
                       {formatGiaUsd(item.price)}
@@ -211,13 +217,14 @@ export default function WorldGoldHistoryTable() {
                     <td
                       className={worldGoldHistoryTableStyles.td}
                       style={{
-                        borderColor: "var(--border-color)",
+                        borderColor: "rgba(148, 163, 184, 0.18)",
                         color:
                           item.change > 0
                             ? "var(--success-text)"
                             : item.change < 0
                               ? "var(--warning-text)"
                               : "var(--muted-color)",
+                        fontWeight: 600,
                       }}
                     >
                       {formatThayDoi(item.change)}
@@ -227,7 +234,7 @@ export default function WorldGoldHistoryTable() {
                       className={worldGoldHistoryTableStyles.td}
                       style={{
                         color: "var(--muted-color)",
-                        borderColor: "var(--border-color)",
+                        borderColor: "rgba(148, 163, 184, 0.18)",
                       }}
                     >
                       {formatNgay(item.date)}

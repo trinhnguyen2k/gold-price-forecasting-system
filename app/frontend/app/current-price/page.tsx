@@ -8,7 +8,7 @@ export default function CurrentPricePage() {
       <DashboardHeader />
 
       <main className="min-h-screen bg-[var(--page-bg)]">
-        <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8 lg:py-10">
+        <div className="mx-auto w-full max-w-[1500px] px-6 py-8 lg:px-8 lg:py-10">
           <CurrentGoldPriceCard />
         </div>
 

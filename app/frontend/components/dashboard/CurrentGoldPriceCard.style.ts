@@ -1,5 +1,5 @@
 export const currentGoldPriceCardStyles = {
-  card: "border shadow-sm",
+  card: "shadow-sm",
   header: "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between",
 
   titleRow: "flex flex-wrap items-center gap-3",
@@ -13,6 +13,7 @@ export const currentGoldPriceCardStyles = {
     "h-10 w-full appearance-none rounded-xl border pl-3 pr-12 text-sm outline-none transition-colors",
   selectIcon:
     "pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2",
+
   grid: "mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2",
 
   statBox: "rounded-2xl border p-5",
@@ -21,7 +22,7 @@ export const currentGoldPriceCardStyles = {
   statHint: "mt-2 text-sm",
 
   metaGrid: "grid grid-cols-1 gap-4 md:grid-cols-2",
-  metaBox: "rounded-xl border p-4",
+  metaBox: "rounded-2xl border p-4",
   metaLabel: "text-xs font-medium uppercase tracking-wide",
   metaValue: "mt-2 text-sm font-semibold",
 

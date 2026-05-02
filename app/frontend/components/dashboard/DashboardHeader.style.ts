@@ -4,7 +4,7 @@ export const dashboardHeaderStyles = {
   topBar: "border-b border-white/10 bg-[var(--header-bg)] text-white",
 
   topBarInner:
-    "mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 lg:px-8",
+    "mx-auto flex w-full max-w-[1500px] items-center justify-between gap-4 px-6 py-4 lg:px-8",
 
   left: "min-w-0",
 
@@ -27,7 +27,7 @@ export const dashboardHeaderStyles = {
   navBar: "border-b border-white/10 bg-[var(--header-bg-soft)] text-white",
 
   navInner:
-    "mx-auto flex max-w-7xl items-center gap-2 overflow-x-auto px-6 py-3 lg:px-8",
+    "mx-auto flex w-full max-w-[1500px] items-center gap-2 overflow-x-auto px-6 py-3 lg:px-8",
 
   navLink:
     "whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium text-slate-300 transition-all hover:bg-white/10 hover:text-white",

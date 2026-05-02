@@ -33,38 +33,98 @@ function findMetricsBySplit(
 
 function MetricPanel({ title, metric }: MetricPanelProps) {
   return (
-    <div className={latestForecastCardStyles.metricPanel}>
-      <div className={latestForecastCardStyles.metricHeader}>
-        <h3 className={latestForecastCardStyles.metricTitle}>{title}</h3>
-        <p className={latestForecastCardStyles.metricHint}>Lower is better</p>
-      </div>
+    <div
+      className={latestForecastCardStyles.metricPanel}
+      style={{
+        backgroundColor: "var(--card-bg)",
+        borderColor: "rgba(148, 163, 184, 0.28)",
+      }}
+    >
+      <h3
+        className={latestForecastCardStyles.metricTitle}
+        style={{ color: "var(--title-color)" }}
+      >
+        {title}
+      </h3>
+
+      <p
+        className={latestForecastCardStyles.metricHint}
+        style={{ color: "var(--muted-color)" }}
+      >
+        Giá trị càng thấp càng tốt
+      </p>
 
       {metric ? (
-        <div className={latestForecastCardStyles.metricBody}>
-          <div className={latestForecastCardStyles.metricItemMae}>
-            <p className={latestForecastCardStyles.metricValueMae}>
+        <div className={latestForecastCardStyles.metricStatsRow}>
+          <div
+            className={latestForecastCardStyles.metricStatBox}
+            style={{
+              backgroundColor: "var(--blue-accent-soft)",
+              borderColor: "rgba(148, 163, 184, 0.22)",
+            }}
+          >
+            <p
+              className={latestForecastCardStyles.metricStatValue}
+              style={{ color: "var(--blue-accent)" }}
+            >
               {metric.mae.toFixed(2)}
             </p>
-            <p className={latestForecastCardStyles.metricLabel}>MAE</p>
+            <p
+              className={latestForecastCardStyles.metricStatLabel}
+              style={{ color: "var(--muted-color)" }}
+            >
+              MAE
+            </p>
           </div>
 
-          <div className={latestForecastCardStyles.metricItemRmse}>
-            <p className={latestForecastCardStyles.metricValueRmse}>
+          <div
+            className={latestForecastCardStyles.metricStatBox}
+            style={{
+              backgroundColor: "var(--panel-bg)",
+              borderColor: "rgba(148, 163, 184, 0.22)",
+            }}
+          >
+            <p
+              className={latestForecastCardStyles.metricStatValue}
+              style={{ color: "var(--title-color)" }}
+            >
               {metric.rmse.toFixed(2)}
             </p>
-            <p className={latestForecastCardStyles.metricLabel}>RMSE</p>
+            <p
+              className={latestForecastCardStyles.metricStatLabel}
+              style={{ color: "var(--muted-color)" }}
+            >
+              RMSE
+            </p>
           </div>
 
-          <div className={latestForecastCardStyles.metricItemMape}>
-            <p className={latestForecastCardStyles.metricValueMape}>
+          <div
+            className={latestForecastCardStyles.metricStatBox}
+            style={{
+              backgroundColor: "var(--gold-accent-soft)",
+              borderColor: "rgba(148, 163, 184, 0.22)",
+            }}
+          >
+            <p
+              className={latestForecastCardStyles.metricStatValue}
+              style={{ color: "var(--gold-accent)" }}
+            >
               {metric.mape.toFixed(2)}%
             </p>
-            <p className={latestForecastCardStyles.metricLabel}>MAPE</p>
+            <p
+              className={latestForecastCardStyles.metricStatLabel}
+              style={{ color: "var(--muted-color)" }}
+            >
+              MAPE
+            </p>
           </div>
         </div>
       ) : (
-        <p className={latestForecastCardStyles.emptyText}>
-          No metrics available.
+        <p
+          className={latestForecastCardStyles.emptyText}
+          style={{ color: "var(--muted-color)" }}
+        >
+          Chưa có dữ liệu đánh giá.
         </p>
       )}
     </div>
@@ -99,7 +159,8 @@ export default function LatestForecastCard({
       className={latestForecastCardStyles.card}
       style={{
         backgroundColor: "var(--card-bg)",
-        borderColor: "var(--border-color)",
+        borderColor: "rgba(148, 163, 184, 0.45)",
+        boxShadow: "0 8px 24px rgba(15, 39, 71, 0.04)",
       }}
     >
       <CardHeader className={latestForecastCardStyles.header}>
@@ -137,7 +198,7 @@ export default function LatestForecastCard({
                 className={latestForecastCardStyles.infoPanel}
                 style={{
                   backgroundColor: "var(--panel-bg)",
-                  borderColor: "var(--border-color)",
+                  borderColor: "rgba(148, 163, 184, 0.28)",
                 }}
               >
                 <div
@@ -188,6 +249,7 @@ export default function LatestForecastCard({
                 className={latestForecastCardStyles.predictionPanel}
                 style={{
                   backgroundColor: "var(--blue-accent-soft)",
+                  borderColor: "rgba(92, 200, 255, 0.28)",
                 }}
               >
                 <div
@@ -217,7 +279,10 @@ export default function LatestForecastCard({
                     </p>
                   </>
                 ) : (
-                  <p style={{ color: "var(--muted-color)" }}>
+                  <p
+                    className={latestForecastCardStyles.emptyText}
+                    style={{ color: "var(--muted-color)" }}
+                  >
                     Chưa có dữ liệu dự báo.
                   </p>
                 )}
@@ -228,7 +293,7 @@ export default function LatestForecastCard({
               className={latestForecastCardStyles.differenceBox}
               style={{
                 backgroundColor: "var(--panel-bg)",
-                borderColor: "var(--border-color)",
+                borderColor: "rgba(148, 163, 184, 0.28)",
               }}
             >
               <div className="flex items-center gap-2">

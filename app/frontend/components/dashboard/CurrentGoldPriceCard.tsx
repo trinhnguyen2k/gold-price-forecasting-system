@@ -117,7 +117,8 @@ export default function CurrentGoldPriceCard() {
       className={currentGoldPriceCardStyles.card}
       style={{
         backgroundColor: "var(--card-bg)",
-        borderColor: "var(--border-color)",
+        borderColor: "rgba(148, 163, 184, 0.45)",
+        boxShadow: "0 8px 24px rgba(15, 39, 71, 0.04)",
       }}
     >
       <CardHeader className={currentGoldPriceCardStyles.header}>
