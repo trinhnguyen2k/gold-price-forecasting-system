@@ -30,6 +30,10 @@ const suggestedQuestions = [
   "Biểu đồ giá vàng cho thấy xu hướng gì?",
 ];
 
+const CHAT_STORAGE_KEY = "gold-price-chatbot-messages";
+const CHAT_OPEN_KEY = "gold-price-chatbot-open";
+const CHAT_EXPANDED_KEY = "gold-price-chatbot-expanded";
+
 type ChatMessage = {
   id: string;
   role: "user" | "bot";
@@ -37,15 +41,84 @@ type ChatMessage = {
   isInScope?: boolean;
 };
 
+const defaultMessages: ChatMessage[] = [];
+
 export default function ChatBot() {
+  const [isHydrated, setIsHydrated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(defaultMessages);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setIsHydrated(true);
+
+    try {
+      const savedMessages = window.localStorage.getItem(CHAT_STORAGE_KEY);
+      const savedIsOpen = window.localStorage.getItem(CHAT_OPEN_KEY);
+      const savedIsExpanded = window.localStorage.getItem(CHAT_EXPANDED_KEY);
+
+      if (savedMessages) {
+        const parsedMessages = JSON.parse(savedMessages) as ChatMessage[];
+        setMessages(
+          Array.isArray(parsedMessages) ? parsedMessages : defaultMessages,
+        );
+      }
+
+      if (savedIsOpen) {
+        setIsOpen(savedIsOpen === "true");
+      }
+
+      if (savedIsExpanded) {
+        setIsExpanded(savedIsExpanded === "true");
+      }
+    } catch (error) {
+      console.error("Không thể đọc localStorage của chatbot:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isHydrated) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    } catch (error) {
+      console.error("Không thể lưu messages vào localStorage:", error);
+    }
+  }, [messages, isHydrated]);
+
+  useEffect(() => {
+    if (!isHydrated) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(CHAT_OPEN_KEY, String(isOpen));
+    } catch (error) {
+      console.error("Không thể lưu trạng thái open vào localStorage:", error);
+    }
+  }, [isOpen, isHydrated]);
+
+  useEffect(() => {
+    if (!isHydrated) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(CHAT_EXPANDED_KEY, String(isExpanded));
+    } catch (error) {
+      console.error(
+        "Không thể lưu trạng thái expanded vào localStorage:",
+        error,
+      );
+    }
+  }, [isExpanded, isHydrated]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -124,8 +197,20 @@ export default function ChatBot() {
 
   function handleClear() {
     setInputValue("");
-    setMessages([]);
+    setMessages(defaultMessages);
     setErrorMessage("");
+    setIsExpanded(false);
+
+    try {
+      window.localStorage.removeItem(CHAT_STORAGE_KEY);
+      window.localStorage.removeItem(CHAT_EXPANDED_KEY);
+    } catch (error) {
+      console.error("Không thể xóa localStorage của chatbot:", error);
+    }
+  }
+
+  if (!isHydrated) {
+    return null;
   }
 
   return (

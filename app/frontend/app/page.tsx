@@ -1,7 +1,6 @@
 import LatestForecastCard from "@/components/dashboard/LatestForecastCard";
 import LatestPriceCard from "@/components/dashboard/LatestPriceCard";
 import PriceHistoryChart from "@/components/dashboard/PriceHistoryChart";
-import ChatBot from "@/components/dashboard/ChatbotBox";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import WorldGoldHistoryTable from "@/components/dashboard/WorldGoldHistoryTable";
 import { getLatestForecast, getLatestPrice, getPriceHistory } from "@/libs/api";
@@ -35,8 +34,6 @@ export default async function HomePage() {
             <WorldGoldHistoryTable />
           </div>
         </div>
-
-        <ChatBot />
       </main>
     </>
   );

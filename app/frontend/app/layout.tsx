@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
-
-import ThemeProvider from "@/components/providers/ThemeProvider";
+import ChatBot from "@/components/dashboard/ChatbotBox";
 
 export const metadata: Metadata = {
   title: "Gold Price Forecast Dashboard",
-  description: "Gold price dashboard with forecasting and chatbot support",
+  description: "Hệ thống dự báo giá vàng",
 };
 
 export default function RootLayout({
@@ -14,9 +14,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
+    <html lang="vi" suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+        >
+          {children}
+          <ChatBot />
+        </ThemeProvider>
       </body>
     </html>
   );
