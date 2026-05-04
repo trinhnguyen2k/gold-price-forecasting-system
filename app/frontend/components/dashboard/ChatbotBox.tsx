@@ -19,9 +19,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { chatBotStyles } from "./ChatBot.style";
 
 const suggestedQuestions = [
-  "Giá vàng mới nhất là bao nhiêu?",
-  "Dự báo mới nhất là gì?",
-  "Các metrics hiện tại là gì?",
+  "Giá vàng gần nhất là bao nhiêu?",
+  "Giá vàng thế giới hiện tại là bao nhiêu?",
+  "Giá SJC hiện tại là bao nhiêu?",
+  "Dự báo ngày kế tiếp là gì?",
+  "Chênh lệch forecast hiện tại là bao nhiêu?",
+  "MAE là gì?",
+  "RMSE là gì?",
+  "Validation và test khác nhau thế nào?",
+  "Biểu đồ giá vàng cho thấy xu hướng gì?",
 ];
 
 type ChatMessage = {
