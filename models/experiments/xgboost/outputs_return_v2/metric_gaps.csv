@@ -1,0 +1,4 @@
+metric,train_to_validation_gap,validation_to_test_gap
+MAE,14.604,48.5009
+RMSE,21.3836,59.6519
+MAPE,0.1336,0.8465
